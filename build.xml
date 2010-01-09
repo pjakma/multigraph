@@ -1,0 +1,48 @@
+<project name="MultiGraph" default="compile">
+
+    <property name="src.dir"     value="src"/>
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+    <property name="tests.dir"   value="${build.dir}/tests"/>
+    <property name="junit.jar"   value="lib/junit-4.8.1.jar" />
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" source="1.6"/>
+    </target>
+
+    <target name="jar">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/MultiGraph.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value=""/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="test" depends="compile">
+        <mkdir dir="${tests.dir}" />
+        <javac srcdir="tests" destdir="${tests.dir}" source="1.6">
+	  <classpath>
+	    <pathelement location="${classes.dir}"/>
+	    <pathelement location="${junit.jar}"/>
+	  </classpath>
+	</javac>
+
+	<java classname="org.junit.runner.JUnitCore">
+	  <arg value="MultiGraph.TestEdge"/>
+	  <arg value="MultiGraph.layout.Vector2DTest"/>
+	  <classpath>
+	    <pathelement location="${classes.dir}"/>
+	    <pathelement location="${tests.dir}"/>
+	    <pathelement location="${junit.jar}"/>
+	  </classpath>
+	</java>
+    </target>
+
+</project>
