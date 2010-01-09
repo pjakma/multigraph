@@ -14,6 +14,7 @@
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.nongnu.multigraph;
+
 import java.io.*;
 
 public class debug {
