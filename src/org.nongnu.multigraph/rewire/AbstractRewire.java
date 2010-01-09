@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */        
-package MultiGraph.rewire;
+package org.nongnu.multigraph.rewire;
 
-import MultiGraph.Edge;
-import MultiGraph.Graph;
+import org.nongnu.multigraph.Edge;
+import org.nongnu.multigraph.Graph;
 
 public abstract class AbstractRewire {
   static protected <N,L> void clear_one (Graph<N, L> graph, N node) {

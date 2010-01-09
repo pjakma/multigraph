@@ -1,4 +1,4 @@
-<project name="MultiGraph" default="compile">
+<project name="org.nongnu.multigraph" default="compile">
 
     <property name="src.dir"     value="src"/>
     <property name="build.dir"   value="bin"/>
@@ -35,8 +35,8 @@
 	</javac>
 
 	<java classname="org.junit.runner.JUnitCore">
-	  <arg value="MultiGraph.TestEdge"/>
-	  <arg value="MultiGraph.layout.Vector2DTest"/>
+	  <arg value="org.nongnu.multigraph.TestEdge"/>
+	  <arg value="org.nongnu.multigraph.layout.Vector2DTest"/>
 	  <classpath>
 	    <pathelement location="${classes.dir}"/>
 	    <pathelement location="${tests.dir}"/>

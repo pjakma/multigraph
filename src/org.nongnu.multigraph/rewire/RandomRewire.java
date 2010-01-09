@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package MultiGraph.rewire;
+package org.nongnu.multigraph.rewire;
 
 import java.util.Random;
 
-import MultiGraph.EdgeLabeler;
-import MultiGraph.Graph;
+import org.nongnu.multigraph.EdgeLabeler;
+import org.nongnu.multigraph.Graph;
 
 public class RandomRewire extends AbstractRewire {
   static private <N,L> void rewire_one (Graph<N,L> graph, N node, 

@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package MultiGraph.layout;
+package org.nongnu.multigraph.layout;
 
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
 
-import MultiGraph.Graph;
+import org.nongnu.multigraph.Graph;
 
 public abstract class Layout<N extends PositionableNode, L> {
   Graph<N, L> graph;

@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package MultiGraph.layout;
+package org.nongnu.multigraph.layout;
 
 import java.awt.Dimension;
 import java.util.Random;
 
-import MultiGraph.Edge;
-import MultiGraph.Graph;
-import MultiGraph.debug;
+import org.nongnu.multigraph.Edge;
+import org.nongnu.multigraph.Graph;
+import org.nongnu.multigraph.debug;
 
 /* See "Graph Drawing by Force-directed Placement", Fruchterman & Reingold */
 public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {

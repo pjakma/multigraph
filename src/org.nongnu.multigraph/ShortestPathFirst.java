@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package MultiGraph;
+package org.nongnu.multigraph;
 import java.util.*;
 
 /* Dijkstra's Shortest Path First algoritm, implemented to act on a 

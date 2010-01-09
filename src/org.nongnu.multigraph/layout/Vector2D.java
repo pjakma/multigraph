@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package MultiGraph.layout;
+package org.nongnu.multigraph.layout;
 
 import java.awt.geom.Point2D;
 

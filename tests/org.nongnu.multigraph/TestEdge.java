@@ -1,6 +1,6 @@
 /* This file is part of 'MultiGraph'
  *
- * Copyright (C) 2009 Paul Jakma
+ * Copyright (C) 2009 Aidan Delaney
  *
  * MultiGraph is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,15 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package MultiGraph.layout;
+package org.nongnu.multigraph;
 
-public interface PositionableNode {
-  public Vector2D getPosition ();
-  public Vector2D getVelocity ();
-  
-  public float getSize ();
-  public void setSize (float s);
-  
-  public float getMass ();
-  public void setMass (float m);
+import org.junit.* ;
+import static org.junit.Assert.* ;
+
+public class TestEdge {
+    @Test public void testNullCreate() {
+	Edge<String, String> e = new Edge(null, null, 1, null);
+	assertTrue(null == e.from);
+	assertTrue(null == e.to);
+	assertTrue(null == e.label);
+    }
+
+    @Test(expected=AssertionError.class)
+    public void testAssertFailCreate () {
+	Edge<String, String> e = new Edge(null, null, 1, null);
+	fail();
+    }
 }

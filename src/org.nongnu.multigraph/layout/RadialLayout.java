@@ -15,27 +15,31 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package MultiGraph.layout;
+package org.nongnu.multigraph.layout;
 
 import java.awt.Dimension;
-import java.util.Random;
 
-import MultiGraph.Graph;
+import org.nongnu.multigraph.Graph;
+import org.nongnu.multigraph.debug;
 
-public class RandomLayout<N extends PositionableNode, L> 
-            extends Layout<N, L> {
+public class RadialLayout<N extends PositionableNode, L> 
+                          extends Layout<N, L> {
+
   
-  public RandomLayout (Graph<N,L> graph, Dimension bound, int maxiterations) {
+  public RadialLayout (Graph<N, L> graph, Dimension bound, int maxiterations) {
     super (graph, bound, maxiterations);
   }
-  
-  @Override
+
   public boolean layout (float interval) {
-    Random r = new Random ();
+    /* 10% gap left to border */
+    double radius = Math.min (bound.width, bound.height)/2.0;
+    double sweep = 2 * Math.PI / graph.size ();
+    Vector2D v = new Vector2D (0, radius);
     
     for (N node : graph) {
-      node.getPosition ().setLocation (r.nextInt (bound.width) - bound.width/2,
-                                       r.nextInt (bound.height) - bound.height/2);
+      node.getPosition ().setLocation (v);
+      v.rotate (sweep);
+      debug.println ("v: " + v);
     }
     return false;
   }

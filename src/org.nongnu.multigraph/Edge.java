@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package MultiGraph;
+package org.nongnu.multigraph;
 
 // An edge, identified immutably by <from,to,label>, of some mutable weight.
 public class Edge<N,L> {
