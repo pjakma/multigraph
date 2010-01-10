@@ -22,6 +22,10 @@ import java.util.Random;
 
 import org.nongnu.multigraph.Graph;
 
+/**
+ * Random layout of a graph. This layout can be interesting to apply prior to a
+ * ForceLayout.
+ */
 public class RandomLayout<N extends PositionableNode, L> 
             extends Layout<N, L> {
   

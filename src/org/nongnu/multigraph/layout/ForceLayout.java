@@ -24,7 +24,15 @@ import org.nongnu.multigraph.Edge;
 import org.nongnu.multigraph.Graph;
 import org.nongnu.multigraph.debug;
 
-/* See "Graph Drawing by Force-directed Placement", Fruchterman & Reingold */
+/**
+ * See "Graph Drawing by Force-directed Placement", Fruchterman & Reingold.
+ * <p>
+ * This algorithm tries to layout a graph as if the nodes are repelled by each other,
+ * exponentially more so as they get closer to each other, while at the same time
+ * the edges act like springs to pull nodes together. The algorithm takes a number of
+ * iterations to reach equilibrium, presuming there are no other forces acting on the
+ * graph.
+ */
 public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
   private double k;
   private double mintemp = 0.04;

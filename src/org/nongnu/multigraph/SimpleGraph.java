@@ -19,7 +19,7 @@ package org.nongnu.multigraph;
 
 import java.util.Collection;
 
-/* Simple graph: undirected and no loops allowed */
+/** Simple graph: undirected and no loops allowed */
 public class SimpleGraph<N, L> extends MultiGraph<N, L> {
 
 	@Override

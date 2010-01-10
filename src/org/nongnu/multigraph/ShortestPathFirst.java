@@ -18,7 +18,8 @@
 package org.nongnu.multigraph;
 import java.util.*;
 
-/* Dijkstra's Shortest Path First algoritm, implemented to act on a 
+/**
+ * Dijkstra's Shortest Path First algoritm, implemented to act on a 
  * Graph of N-nodes and Edges, with L-labels
  */
 public class ShortestPathFirst<N,L> {

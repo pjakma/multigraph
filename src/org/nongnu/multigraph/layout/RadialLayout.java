@@ -22,6 +22,13 @@ import java.awt.Dimension;
 import org.nongnu.multigraph.Graph;
 import org.nongnu.multigraph.debug;
 
+/**
+ * Layout the graph's nodes radially, in a nice circle. It tries to scale the
+ * node size according to the graph.
+ *
+ * @param <N>
+ * @param <L>
+ */
 public class RadialLayout<N extends PositionableNode, L> 
                           extends Layout<N, L> {
 

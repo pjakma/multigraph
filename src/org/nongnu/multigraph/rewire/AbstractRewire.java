@@ -20,6 +20,14 @@ package org.nongnu.multigraph.rewire;
 import org.nongnu.multigraph.Edge;
 import org.nongnu.multigraph.Graph;
 
+/**
+ * Abstract interface for algorithms to rewire the edges of a graph.
+ * 
+ * All edges may be initially cleared from the graph.
+ * 
+ * @author paul
+ *
+ */
 public abstract class AbstractRewire {
   static protected <N,L> void clear_one (Graph<N, L> graph, N node) {
     for (Edge<N,L> e : graph.edges (node))

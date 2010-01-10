@@ -19,8 +19,9 @@ package org.nongnu.multigraph;
 
 import java.util.*;
 
-/* Implementation specific class for the MultiGraph.
- *
+/**
+ * Implementation specific class for the MultiGraph.
+ * <p>
  * Maintains state for a Node, including edges out to other nodes
  */
 public class Node<N,L> {

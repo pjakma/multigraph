@@ -17,6 +17,12 @@
  */
 package org.nongnu.multigraph.layout;
 
+/**
+ * Interface that is required to be implemented by nodes of a graph, if
+ * any Layout algorithm is to be able to act on them.
+ * @author paul
+ *
+ */
 public interface PositionableNode {
   public Vector2D getPosition ();
   public Vector2D getVelocity ();

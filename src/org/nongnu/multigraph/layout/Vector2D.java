@@ -19,7 +19,6 @@ package org.nongnu.multigraph.layout;
 
 import java.awt.geom.Point2D;
 
-
 public class Vector2D extends Point2D.Double {
   
   public void normalise () {

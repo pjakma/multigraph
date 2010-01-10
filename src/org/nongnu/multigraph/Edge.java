@@ -17,7 +17,14 @@
  */
 package org.nongnu.multigraph;
 
-// An edge, identified immutably by <from,to,label>, of some mutable weight.
+/**
+ * An edge, identified immutably by &lt;from,to,label&gt;, of some mutable weight.
+ *
+ * @author Paul Jakma
+ *
+ * @param <N> The type of the Node's in the graph.
+ * @param <L> The type of the edge Label's in the graph.
+ */
 public class Edge<N,L> {
   int weight;
   final L label;

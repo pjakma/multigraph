@@ -22,6 +22,11 @@ import java.util.Random;
 import org.nongnu.multigraph.EdgeLabeler;
 import org.nongnu.multigraph.Graph;
 
+/** Randomly wire up nodes of a graph.
+ * 
+ * @author paul
+ *
+ */
 public class RandomRewire extends AbstractRewire {
   static private <N,L> void rewire_one (Graph<N,L> graph, N node, 
                                         int mindegree, EdgeLabeler<N,L> el,

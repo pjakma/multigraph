@@ -22,6 +22,23 @@ import java.lang.reflect.Constructor;
 
 import org.nongnu.multigraph.Graph;
 
+/**
+ * Abstract implementation of a layout algorithm. To be used something like:
+ * <p>
+ * <code><pre>
+ * new Layout l = Layout.factory ("layout_name", graph, bound_dimension, 10);
+ * while (l.layout (time_passed));
+ *   &lt;do whatever other work&gt;
+ * </pre></code>
+ * <p>
+ * In order to be able to apply a layout algorithm to a graph, the graph's N-type
+ * nodes must implement the {@link PositionableNode} interface.
+ * 
+ * @author paul
+ *
+ * @param <N> The Node type of the graph, which must implement PositionableNode
+ * @param <L> The Label type of the graph.
+ */
 public abstract class Layout<N extends PositionableNode, L> {
   Graph<N, L> graph;
   int maxiterations;

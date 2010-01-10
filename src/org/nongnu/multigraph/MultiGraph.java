@@ -19,7 +19,16 @@ package org.nongnu.multigraph;
 
 import java.util.*;
 
-/* A graph of N nodes, with Edges labeled L */
+/**
+ * A "multi-graph" implementation of the {@link Graph} interface.
+ * <p>
+ * This implementation allows for multiple, directed edges between any nodes,
+ * including between the same node.
+ * <p>
+ * XXX: As SimpleGraph inherits from this, this class probably should not be
+ * public. We don't really want different restrictions of the graph to be 
+ * type-compatible.
+ */
 public class MultiGraph<N,L>
        implements Graph<N,L> {
 
