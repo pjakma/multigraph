@@ -53,7 +53,7 @@ public interface Graph<N,L> extends Set<N> {
    *
    * Weight defaults to 1. Nodes are automatically added to graph, as needs be.
    *
-   * If a given edge for &lt;from,to,label&gt; already exists, then the
+   * If a given edge for @{literal from,to,label>} already exists, then the
    * weight is updated.
    * 
    * @param from Node from which the edge originates.
@@ -115,10 +115,28 @@ public interface Graph<N,L> extends Set<N> {
    * @return The set of nodes that succeed the given node. I.e. those nodes to which the given node
    *  has an edge.
    */
-  Set<N> successors (N node);
+  Set<N> successors (N from);
   /**
    * @param node The given node, which is to be queried.
    * @return The set of edges that go out from this node.
    */
-  Set<Edge<N,L>> edges (N node);
+  Set<Edge<N,L>> edges (N from);
+  
+  /**
+   * Find the edges going <em>from</em> one node <em>to</em> another node.
+   * @param from Which node we want to query edges from.
+   * @param to The node to which we're looking for an edge.
+   * @return A Collection of edges going from <em>from</em>-&gt;<em>to</em> 
+   *         if any exist, or {@code null} otherwise.
+   * @see #edges(Object)
+   */
+  Collection<Edge<N,L>> edges (N from, N to);
+  /**
+   * Find the first edge from a node to another node.
+   * @param from Which node we want to query edges from.
+   * @param to The node to which we're looking for an edge.
+   * @return An edge going from <em>from</em>-&gt;<em>to</em> if any exist,
+   *         or {@code null} otherwise.
+   */
+  Edge<N,L> edge (N from, N to);
 }

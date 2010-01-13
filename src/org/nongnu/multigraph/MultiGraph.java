@@ -124,12 +124,32 @@ public class MultiGraph<N,L>
   }
   // See also (Set<?>).remove() down below
     
-  public synchronized Set<Edge<N,L>> edges (N node) {
+  public synchronized Set<Edge<N,L>> edges (N from) {
     Node<N,L> n;
         
-    n = nodes.get (node);
+    n = nodes.get (from);
     
     return n.edges ();
+  }
+  
+  public synchronized Collection<Edge<N,L>> edges (N from, N to) {
+    Node<N,L> nf, nt;
+    
+    if ((nf = nodes.get (from)) == null)
+      return null;
+    if ((nt = nodes.get ((to))) == null)
+      return null;
+    
+    return nf.edges (nt);
+  }
+  
+  public Edge<N, L> edge (N from, N to) {
+    Collection<Edge<N,L>> edges = edges (from, to);
+    
+    for (Edge<N,L> e : edges)
+      return e;
+    
+    return null;
   }
   
   public synchronized Set<N> successors (N node) {
@@ -226,5 +246,5 @@ public class MultiGraph<N,L>
   }
   public boolean retainAll (Collection<?> c) {
     return nodeset.retainAll (c);
-  }  
+  }
 }
