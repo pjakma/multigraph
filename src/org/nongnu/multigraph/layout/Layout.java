@@ -55,10 +55,15 @@ public abstract class Layout<N extends PositionableNode, L> {
    */
   public abstract boolean layout (float interval);
   
+  /* Turn algorithm name to fully qualified class name */
+  private static String alg2class_name (String algorithm) {
+    return Layout.class.getPackage ().getName () + "." + algorithm + "Layout";
+  }
+  
   /* factory related */
-  protected static boolean isaLayout (String name) {
+  public static boolean isaLayout (String name) {
       try {
-          Class.forName (name);
+          Class.forName (alg2class_name (name));
       } catch (ClassNotFoundException e) {
           return false;
       }
@@ -100,13 +105,12 @@ public abstract class Layout<N extends PositionableNode, L> {
       return c;
   }   
   public final static <N extends PositionableNode,L>
-    Layout<N,L> factory (String classname, Graph<N,L> graph, Dimension bound,
+    Layout<N,L> factory (String algname, Graph<N,L> graph, Dimension bound,
                          int maxiterations) {
       Layout<N,L> dp = null;
       Constructor<? extends Layout<N,L>> c;
       
-      c = factory_con (Layout.class.getPackage ().getName () 
-                       + "." + classname + "Layout");
+      c = factory_con (alg2class_name (algname));
       
       try {
           dp = c.newInstance (graph, bound, maxiterations);
