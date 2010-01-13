@@ -19,10 +19,12 @@ package org.nongnu.multigraph.rewire;
 
 import java.util.Random;
 
-import org.nongnu.multigraph.EdgeLabeler;
 import org.nongnu.multigraph.Graph;
 
-/** Randomly wire up nodes of a graph.
+/** 
+ * Randomly wire up nodes of a graph, with each node having at least
+ * the {@value mindegree} number of outgoing edges. Note that the 
+ * graph need not be continuous.
  * 
  * @author paul
  *
@@ -31,6 +33,10 @@ public class RandomRewire extends AbstractRewire {
   static private <N,L> void rewire_one (Graph<N,L> graph, N node, 
                                         int mindegree, EdgeLabeler<N,L> el,
                                         N [] nodes, Random r) {
+    /* XXX: perhaps unnecessarily sigma(2N)
+     * and worst-case is unbounded. Iterative algorithm, would be
+     * better
+     */
     while (graph.nodal_outdegree (node) < mindegree) {
       N to;
       do {
