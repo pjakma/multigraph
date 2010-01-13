@@ -15,54 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.nongnu.multigraph;
 
-import java.util.Collection;
+/**
+ * Simple, undirected graph: No loops allowed and 0 or 1 edges between nodes.
+ * @see SimpleDiGraph
+ */
+public class SimpleGraph<N,L> extends SimpleDiGraph<N, L> {
+  @Override
+  protected boolean _remove (N from, N to, L label) {
+    if (!super._remove (from, to, label))
+      return false;
+    
+    if (!super._remove (to, from, label))
+      throw new java.lang.AssertionError ("Unable to remove other half of edge!");
+    
+    return true;
+  }
 
-/** Simple graph: no loops allowed and no more than 1 edge between nodes. */
-public class SimpleGraph<N, L> extends MultiGraph<N, L> {
-
-	@Override
-	protected void _set(N from, N to, int weight, L label) {
-		Node<N,L> nf = get_node (from), nt;
-		Collection<Edge<N,L>> edges;
-
-		if (from == to)
-			throw new UnsupportedOperationException ("Edges to self"
-													 + " are not allowed!");
-		
-		if ((nt = this.nodes.get (to)) != null &&
-			(edges = nf.edges (nt)) != null &&
-			edges.size () > 0) {
-			
-			/* SimpleGraph should never have multiple edges between nodes */
-			assert edges.size () == 1 : edges.size ();
-			
-			/* An edge already exists. If this is an attempt to add a 2nd edge
-			 * between nodes, then it's an error.
-			 */
-			for (Edge<N,L> edge : edges) {
-				if (edge.label () != label)
-					throw new UnsupportedOperationException (
-							"Multiple edges between nodes are not allowed");
-			}
-			
-		}
-		
-		if (nt == null)
-			nt = get_node (to);
-		
-		super._set (nt, nf, weight, label);
-		super._set (nf, nt, weight, label);
-	}
-
-	@Override
-	protected boolean _remove (N from, N to, L label) {
-		boolean ret1 = super._remove (from, to, label);
-		boolean ret2 = super._remove (to, from, label);
-
-		assert (ret1 == ret2);
-
-		return ret1;
-	}
+  @Override
+  protected void _set (N from, N to, int weight, L label) {
+    super._set (from, to, weight, label);
+    super._set (to, from, weight, label);
+  }
 }
