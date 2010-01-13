@@ -16,7 +16,7 @@
         <javac srcdir="${src.dir}" destdir="${classes.dir}" source="1.6"/>
     </target>
 
-    <target name="jar">
+    <target name="jar" depends="compile">
         <mkdir dir="${jar.dir}"/>
         <jar destfile="${jar.dir}/MultiGraph.jar" basedir="${classes.dir}">
             <manifest>
