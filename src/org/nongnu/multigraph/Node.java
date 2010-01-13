@@ -126,14 +126,14 @@ public class Node<N,L> {
   /* Return all edges out of this node */
   Set<Edge<N,L>> edges () {
     Set<Edge<N,L>> s = new HashSet<Edge<N,L>> ();
-        
+    
     for (HashMap<L,Edge<N,L>> edges : edgelist())
       for (Edge<N,L> e : edges.values())
         s.add(e);
     
     return s;
   }
-
+  
   /* Return edges out of this node, to given node. */
   Collection<Edge<N,L>> edges (Node<N,L> to) {
 	  HashMap<L,Edge<N,L>> edges;
@@ -143,6 +143,9 @@ public class Node<N,L> {
 	  
 	  if ((edges = edgelist.get (to)) == null)
 		  return null;
+	  
+	  if (edges.isEmpty ())
+	    return null;
 	  
 	  return edges.values ();
   }
