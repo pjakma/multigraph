@@ -26,9 +26,9 @@ package org.nongnu.multigraph;
  * @param <L> The type of the edge Label's in the graph.
  */
 public class Edge<N,L> {
-  int weight;
-  final L label;
-  final N from, to;
+  private int weight;
+  private final L label;
+  private final N from, to;
   
   /* Constructor is deliberately left as package-scope. This object is meant
    * only to be viewed by users outside of MultiGraph - not created.

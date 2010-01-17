@@ -24,9 +24,9 @@ public class TestEdge {
     @Test public void testNullCreate() {
 	Edge<String, String> e
 	    = new Edge<String, String> (null, null, 1, null);
-	assertTrue(null == e.from);
-	assertTrue(null == e.to);
-	assertTrue(null == e.label);
+	assertTrue(null == e.from());
+	assertTrue(null == e.to());
+	assertTrue(null == e.label());
     }
 
     @Test(expected=AssertionError.class)
