@@ -15,13 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * Callback interface, to allow a rewiring algorithm to forward
- * the labelling of each new edge back to the user.
- */
 package org.nongnu.multigraph.rewire;
 
+/**
+ * Callback interface to forward the labelling of each new edge back to the user.
+ */
 public interface EdgeLabeler<N,L> {
   public L getLabel (N from, N to);
 }

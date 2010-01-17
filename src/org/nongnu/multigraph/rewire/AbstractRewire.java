@@ -28,7 +28,15 @@ import org.nongnu.multigraph.Graph;
  * @author paul
  *
  */
-public abstract class AbstractRewire {
+public abstract class AbstractRewire<N,L> {
+  Graph<N,L> graph;
+  EdgeLabeler<N,L> el;
+  
+  public AbstractRewire (Graph<N,L> graph, EdgeLabeler<N,L> el) {
+    this.graph = graph;
+    this.el = el;
+  }
+  
   static protected <N,L> void clear_one (Graph<N, L> graph, N node) {
     for (Edge<N,L> e : graph.edges (node))
       graph.remove (node, e.to ());
@@ -38,4 +46,6 @@ public abstract class AbstractRewire {
       clear_one (graph, n);
     }
   }
+  
+  public abstract void rewire ();
 }

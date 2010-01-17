@@ -29,10 +29,27 @@ import org.nongnu.multigraph.Graph;
  * @author paul
  *
  */
-public class RandomRewire extends AbstractRewire {
-  static private <N,L> void rewire_one (Graph<N,L> graph, N node, 
-                                        int mindegree, EdgeLabeler<N,L> el,
-                                        N [] nodes, Random r) {
+public class RandomRewire<N,L> extends AbstractRewire<N,L> {
+  Random r = new Random ();
+  int mindegree = 1;
+  
+  public RandomRewire (Graph<N, L> graph, EdgeLabeler<N, L> el) {
+    super (graph, el);
+  }
+  /**
+   * Create a RandomRewire graph rewirer, with a minimum out-degree 
+   * which nodes should have after the graph is rewired.
+   * @param graph The graph to rewire.
+   * @param el An EdgeLabeler callback, to allow the user to create Labels
+   *           for new Edges.
+   * @param mindegree The minimum out degree (edges to other nodes)
+   */
+  public RandomRewire (Graph<N, L> graph, EdgeLabeler<N, L> el,
+                       int mindegree) {
+    super (graph, el);
+  }
+  
+  private void rewire_one (N node,int mindegree, N [] nodes) {
     /* XXX: perhaps unnecessarily sigma(2N)
      * and worst-case is unbounded. Iterative algorithm, would be
      * better
@@ -49,27 +66,27 @@ public class RandomRewire extends AbstractRewire {
     }
   }
   
-  @SuppressWarnings("unchecked")
-  public static <N,L> void rewire (Graph<N,L> graph,N node, int mindegree, 
-                            EdgeLabeler<N,L> el) {
-    N[] nodes = (N[]) graph.toArray (new Object[0]);
-    Random r = new Random ();
-    
-    rewire_one (graph, node, mindegree, el, nodes, r);
+  /**
+   * Set the minimum out-degree which nodes should have after the graph is
+   * rewired.
+   * 
+   * @param mindegree The minimum out degree (edges to other nodes)
+   * @return This RandomRewire instance.
+   */
+  public RandomRewire<N,L> set_mindegree (int mindegree) {
+    this.mindegree = mindegree;
+    return this;
   }
   
   @SuppressWarnings("unchecked")
-  public static <N,L> void rewire (Graph<N,L> graph, int mindegree,
-                            EdgeLabeler<N,L> el) {
+  public void rewire () {
     N[] nodes = (N[]) graph.toArray (new Object[0]);
-    Random r = new Random ();
     
     RandomRewire.clear (graph);
     
     for (N node : nodes) {
       /* work around fact you can't have generic typed arrays */
-      rewire_one (graph, node, mindegree, el, nodes, r);
-      
+      rewire_one (node, mindegree, nodes);
     }
   }
 }
