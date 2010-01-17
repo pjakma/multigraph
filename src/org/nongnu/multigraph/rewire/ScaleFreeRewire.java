@@ -78,13 +78,12 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
          *  this model to be applicable to directed graphs..)
          */
         if (r.nextFloat () <= ki/(float) sigmakj) {
-          debug.println ("\tsetting");
           graph.set (to_add, vi, el.getLabel (to_add, vi));
           was_added = true;
         }
         sigmakj_new += graph.nodal_outdegree (vi);
       }
-      sigmakj += graph.nodal_outdegree (to_add);
+      sigmakj_new += graph.nodal_outdegree (to_add);
       sigmakj = sigmakj_new;
       
       /* If node was added successfully, update the split, go onto next
