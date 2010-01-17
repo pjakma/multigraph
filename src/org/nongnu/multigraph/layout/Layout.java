@@ -42,6 +42,7 @@ import org.nongnu.multigraph.Graph;
 public abstract class Layout<N extends PositionableNode, L> {
   Graph<N, L> graph;
   int maxiterations;
+  int iterations = 0;
   Dimension bound;
   int border; /* border to leave, in points */
   
@@ -50,17 +51,27 @@ public abstract class Layout<N extends PositionableNode, L> {
     this.maxiterations = maxiterations;
     this.bound = bound;
   }
-  /* returns true if layout can still change. If false, then there is no more
+  /** 
+   * returns true if layout can still change. If false, then there is no more
    * the layout can do to the graph.
+   * 
+   * This default implementation does nothing except enforce the maximum 
+   * iterations constraint.
    */
-  public abstract boolean layout (float interval);
+  public boolean layout (float interval) {
+    return iterations++ < maxiterations;
+  }
   
   /* Turn algorithm name to fully qualified class name */
   private static String alg2class_name (String algorithm) {
     return Layout.class.getPackage ().getName () + "." + algorithm + "Layout";
   }
   
-  /* factory related */
+  /**
+   * Query whether the given string is an implemented layout algorithm.
+   * @param name Layout algorith name
+   * @return Whether a layout implementation exists for the given algorithm name
+   */
   public static boolean isaLayout (String name) {
       try {
           Class.forName (alg2class_name (name));

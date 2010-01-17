@@ -61,6 +61,9 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
     
     debug.println ("force-layout start");
     
+    if (!super.layout (interval))
+      return false;
+    
     for (N n : graph) {
       Vector2D disp = n.getVelocity ();
       disp.setLocation (0, 0);
