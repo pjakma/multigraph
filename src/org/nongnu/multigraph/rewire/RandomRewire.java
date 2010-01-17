@@ -47,6 +47,7 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
   public RandomRewire (Graph<N, L> graph, EdgeLabeler<N, L> el,
                        int mindegree) {
     super (graph, el);
+    this.mindegree = mindegree;
   }
   
   private void rewire_one (N node,int mindegree, N [] nodes) {
