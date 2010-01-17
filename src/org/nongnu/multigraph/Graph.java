@@ -106,9 +106,14 @@ public interface Graph<N,L> extends Set<N> {
   int nodal_outdegree (N node);
   
   /**
-   * The average nodal out-degree.
+   * @return The average nodal out-degree.
    */
   float avg_nodal_degree ();
+  
+  /**
+   * @return The maximum degree of any node in the graph
+   */
+  int max_nodal_degree ();
   
   /**
    * @param node The given node, which is to be queried.

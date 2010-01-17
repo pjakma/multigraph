@@ -183,6 +183,18 @@ public class MultiDiGraph<N,L>
     return avg;
   }
   
+  public synchronized int max_nodal_degree () {
+    int max = 0;
+    int d;
+    
+    for (Node<N,L> n : nodes.values ()) {
+      if ((d = n.nodal_outdegree ()) > max)
+        max = d;
+    }
+    
+    return max;
+  }
+  
   public synchronized String toString () {
     StringBuilder sb = new StringBuilder ();
     for (Node<N,L> n : nodes.values ()) {
