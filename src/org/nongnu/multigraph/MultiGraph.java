@@ -35,7 +35,7 @@ public class MultiGraph<N,L> extends MultiDiGraph<N, L> {
       return false;
     
     if (!super._remove (to, from, label))
-      throw new java.lang.AssertionError ("Unable to remove other half of edge!");
+      throw new AssertionError ("Unable to remove other half of edge!");
     
     return true;
   }
@@ -44,5 +44,14 @@ public class MultiGraph<N,L> extends MultiDiGraph<N, L> {
   protected void _set (N from, N to, int weight, L label) {
     super._set (from, to, weight, label);
     super._set (to, from, weight, label);
+  }
+
+  @SuppressWarnings ("unchecked")
+  @Override
+  public boolean remove (Object o) {
+    for (Edge<N, L> edge : this.edges ((N) o))
+      if (!super._remove (edge.to, edge.from, edge.label))
+        throw new AssertionError ("Unable to remove other half of edge!");
+    return super.remove (o);
   }
 }
