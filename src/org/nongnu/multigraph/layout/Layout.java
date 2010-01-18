@@ -46,6 +46,12 @@ public abstract class Layout<N extends PositionableNode, L> {
   Dimension bound;
   int border; /* border to leave, in points */
   
+  public Layout (Graph<N, L> graph, Dimension bound) {
+    this.graph = graph;
+    this.maxiterations = 0;
+    this.bound = bound;
+  }
+  
   public Layout (Graph<N, L> graph, Dimension bound, int maxiterations) {
     this.graph = graph;
     this.maxiterations = maxiterations;
@@ -59,7 +65,7 @@ public abstract class Layout<N extends PositionableNode, L> {
    * iterations constraint.
    */
   public boolean layout (float interval) {
-    return iterations++ < maxiterations;
+    return maxiterations > 0 ? iterations++ < maxiterations : true;
   }
   
   /* Turn algorithm name to fully qualified class name */
