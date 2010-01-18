@@ -29,14 +29,22 @@ import org.nongnu.multigraph.debug;
  * <p>
  * This algorithm tries to layout a graph as if the nodes are repelled by each 
  * other, exponentially more so as they get closer to each other, while at the 
- * same time the edges act like springs to pull nodes together. The algorithm
- * takes a number of iterations to reach equilibrium, presuming there are no
- * other forces acting on the graph.
+ * same time the edges act like springs to pull nodes together. These are
+ * combined to give each node a velocity and momentum, acting in tension on
+ * other nodes. If node's have a mass, this is taken into account.
+ * <p>
+ * The algorithm takes a number of iterations to reach equilibrium, presuming 
+ * there are no other forces acting on the graph.
+ * <p>
+ * The behaviour of the algorithm is can be tuned by a number of parameters.
+ * Unfortunately, different graphs may require different values for certain
+ * parameters for best effect. 
  */
 public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
   private double k;
   private double mintemp = 0.001;
   private double C = 1;
+
   private double temperature = 1.2;
   private double decay = 0.9;
   
@@ -137,6 +145,18 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
    */
   public ForceLayout<N,L> setDecay (double decay) {
     this.decay = decay;
+    return this;
+  }
+  
+  /**
+   * @param C Sets the C parameter of the algorithm, which is used to scale 
+   * the k factor of the algorithm. Increasing this factor will magnify the
+   * repulsive and attractive forces, decreasing will minimise them. 
+   * <p>
+   * Default: 1
+   */
+  public ForceLayout<N,L> setC (double C) {
+    this.C = C;
     return this;
   }
   
