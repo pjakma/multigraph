@@ -86,7 +86,8 @@ public interface Graph<N,L> extends Set<N> {
    */
   boolean  remove (N from, N to);
   /**
-   * Remove the given node and all its edges
+   * Remove the given node and all its edges.
+   * XXX: Not properly implemented yet.
    * @see #remove(Object, Object)
    * @see #remove(Object)
    * @see #set(Object, Object, Object)
@@ -117,13 +118,15 @@ public interface Graph<N,L> extends Set<N> {
   
   /**
    * @param node The given node, which is to be queried.
-   * @return The set of nodes that succeed the given node. I.e. those nodes to which the given node
-   *  has an edge.
+   * @return The set of nodes that succeed the given node. I.e. those nodes 
+   *         to which the given node has an edge. The returned set is read-only
+   *         and may not be modified.
    */
   Set<N> successors (N from);
   /**
    * @param node The given node, which is to be queried.
-   * @return The set of edges that go out from this node.
+   * @return The set of edges that go out from this node. The returned set is 
+   *          read-only and may not be modified.
    */
   Set<Edge<N,L>> edges (N from);
   
@@ -131,8 +134,9 @@ public interface Graph<N,L> extends Set<N> {
    * Find the edges going <em>from</em> one node <em>to</em> another node.
    * @param from Which node we want to query edges from.
    * @param to The node to which we're looking for an edge.
-   * @return A Collection of edges going from <em>from</em>-&gt;<em>to</em> 
-   *         if any exist, or {@code null} otherwise.
+   * @return An immutable Collection of edges going from 
+   *         @<em>from</em>-&gt;<em>to</em> if any exist, 
+   *         or {@code null} otherwise.
    * @see #edges(Object)
    */
   Collection<Edge<N,L>> edges (N from, N to);

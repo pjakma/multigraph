@@ -248,7 +248,7 @@ public class MultiDiGraph<N,L>
   public <N> N[] toArray (N[] a) { return nodeset.toArray (a); }
   public Iterator<N> iterator() { return nodeset.iterator (); }
   
-  /* removes havn't been tested */
+  /* XXX: removes havn't been tested */
   public boolean remove (Object o) { 
     return nodeset.remove (o);
   }

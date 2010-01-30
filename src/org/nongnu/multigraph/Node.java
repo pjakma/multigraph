@@ -38,9 +38,12 @@ public class Node<N,L> {
    * destination node:label is 1:1..m
    * label:edge should be 1:1
    */ 
-  HashMap<Node<N,L>,HashMap<L,Edge<N,L>>> edgelist 
+  private HashMap<Node<N,L>,HashMap<L,Edge<N,L>>> edgelist 
   	= new HashMap<Node<N,L>,HashMap<L,Edge<N,L>>> ();
-  HashMap<L,Edge<N,L>> label_edges = new HashMap<L,Edge<N,L>> ();
+  private HashMap<L,Edge<N,L>> label_edges = new HashMap<L,Edge<N,L>> ();
+  /* Cache a set of all edges, so that edges() can be performant */
+  private Set<Edge<N,L>> all_edges = new HashSet<Edge<N,L>> ();
+  
   // edge-centric outdegree,
   int edge_outdegree;
   
@@ -64,7 +67,7 @@ public class Node<N,L> {
     assert (label != null);
     
     if ((to_edges != null) && ((e = to_edges.get (label)) != null) ) {
-        e.weight = weight;
+        e.set_weight (weight);
         return;
     }
     
@@ -73,21 +76,30 @@ public class Node<N,L> {
       edgelist.put (to, to_edges);
     }
     
-    to_edges.put (label, new Edge<N,L> (this.unode, to.unode, weight, label));
+    all_edges.add ((e = new Edge<N,L> (this.unode, to.unode, weight, label)));
+    to_edges.put (label, e);
+    
     edge_outdegree++;
   }
 
   private boolean _remove (Node<N,L> to, L label, boolean clear) {
     HashMap<L,Edge<N,L>> to_edges = edgelist.get (to);
+    Edge<N,L> e;
+    
     assert (to != null);
     
     // nothing to do
     if (to_edges == null)
       return false;
     
+    e = to_edges.get (label);
+    
     if ((label != null) && (to_edges.remove (label) != null)) {
       assert edge_outdegree > 0;
+      
+      all_edges.remove (e);
       edge_outdegree--;
+      
       return true;
     }
     
@@ -97,6 +109,8 @@ public class Node<N,L> {
     
     edge_outdegree -= to_edges.size ();
     to_edges.clear ();
+    all_edges.clear ();
+    
     return (edgelist.remove (to) != null);
   }
   
@@ -120,18 +134,12 @@ public class Node<N,L> {
   }
   
   Collection<HashMap<L,Edge<N,L>>> edgelist () {
-    return edgelist.values();
+    return Collections.unmodifiableCollection (edgelist.values());
   }
   
   /* Return all edges out of this node */
   Set<Edge<N,L>> edges () {
-    Set<Edge<N,L>> s = new HashSet<Edge<N,L>> ();
-    
-    for (HashMap<L,Edge<N,L>> edges : edgelist())
-      for (Edge<N,L> e : edges.values())
-        s.add(e);
-    
-    return s;
+    return Collections.unmodifiableSet (all_edges);
   }
   
   /* Return edges out of this node, to given node. */
@@ -141,13 +149,13 @@ public class Node<N,L> {
 	  if (to == null)
 		  throw new NullPointerException ("Node get requires non-null argument");
 	  
-	  if ((edges = edgelist.get (to)) == null)
+    if ((edges = edgelist.get (to)) == null)
 		  return null;
 	  
 	  if (edges.isEmpty ())
 	    return null;
 	  
-	  return edges.values ();
+	  return Collections.unmodifiableCollection (edges.values ());
   }
   
   boolean isLinked (Node<N,L> to) {
