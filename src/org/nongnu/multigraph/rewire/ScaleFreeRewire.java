@@ -27,6 +27,7 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
   @SuppressWarnings ("unchecked")
   @Override
   public void rewire () {
+    /* new N[..] is not allowed in java, but this works */
     N [] nodes = (N []) new Object[graph.size ()];
     
     /* this tracks the index at which our set of nodes is split between
@@ -77,7 +78,7 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
          *  unclear to me though whether Barabasi and Albert considered
          *  this model to be applicable to directed graphs..)
          */
-        if (r.nextFloat () <= ki/(float) sigmakj) {
+        if (fr <= pi) {
           graph.set (to_add, vi, el.getLabel (to_add, vi));
           was_added = true;
         }
