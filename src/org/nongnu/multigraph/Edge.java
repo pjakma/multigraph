@@ -53,7 +53,10 @@ public class Edge<N,L> {
   public int weight () {
     return weight;
   }
-  
+  void set_weight (int w) {
+      weight = w;
+  }
+  @Override
   public String toString () {
     return "<" + from + " -> " + to + ": "
            + label

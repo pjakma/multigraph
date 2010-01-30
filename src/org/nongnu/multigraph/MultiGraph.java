@@ -50,7 +50,7 @@ public class MultiGraph<N,L> extends MultiDiGraph<N, L> {
   @Override
   public boolean remove (Object o) {
     for (Edge<N, L> edge : this.edges ((N) o))
-      if (!super._remove (edge.to, edge.from, edge.label))
+      if (!super._remove (edge.to (), edge.from (), edge.label ()))
         throw new AssertionError ("Unable to remove other half of edge!");
     return super.remove (o);
   }
