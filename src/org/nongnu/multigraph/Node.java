@@ -67,8 +67,8 @@ public class Node<N,L> {
     assert (label != null);
     
     if ((to_edges != null) && ((e = to_edges.get (label)) != null) ) {
-        e.set_weight (weight);
-        return;
+      e.set_weight (weight);
+      return;
     }
     
     if (to_edges == null) {
@@ -144,25 +144,25 @@ public class Node<N,L> {
   
   /* Return edges out of this node, to given node. */
   Collection<Edge<N,L>> edges (Node<N,L> to) {
-	  HashMap<L,Edge<N,L>> edges;
-	  
-	  if (to == null)
-		  throw new NullPointerException ("Node get requires non-null argument");
-	  
+    HashMap<L,Edge<N,L>> edges;
+    
+    if (to == null)
+      throw new NullPointerException ("Node get requires non-null argument");
+    
     if ((edges = edgelist.get (to)) == null)
-		  return null;
-	  
-	  if (edges.isEmpty ())
-	    return null;
-	  
-	  return Collections.unmodifiableCollection (edges.values ());
+      return null;
+    
+    if (edges.isEmpty ())
+      return null;
+    
+    return Collections.unmodifiableCollection (edges.values ());
   }
   
   boolean isLinked (Node<N,L> to) {
-	  if (to == null)
-		  throw new NullPointerException ("Node get requires non-null argument");
-	  
-	  return edgelist.containsKey (to);
+    if (to == null)
+      throw new NullPointerException ("Node get requires non-null argument");
+    
+    return edgelist.containsKey (to);
   }
   
   public String toString () {
