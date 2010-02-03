@@ -37,6 +37,7 @@
 	<java classname="org.junit.runner.JUnitCore">
 	  <arg value="org.nongnu.multigraph.TestEdge"/>
 	  <arg value="org.nongnu.multigraph.layout.Vector2DTest"/>
+	  <arg value="org.nongnu.multigraph.TestMultiDiGraph"/>
 	  <classpath>
 	    <pathelement location="${classes.dir}"/>
 	    <pathelement location="${tests.dir}"/>
