@@ -82,9 +82,9 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
   @SuppressWarnings("unchecked")
   public void rewire () {
     N[] nodes = (N[]) graph.toArray (new Object[0]);
-    
+
     RandomRewire.clear (graph);
-    
+
     for (N node : nodes) {
       /* work around fact you can't have generic typed arrays */
       rewire_one (node, mindegree, nodes);

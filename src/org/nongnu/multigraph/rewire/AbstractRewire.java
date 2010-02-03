@@ -37,14 +37,8 @@ public abstract class AbstractRewire<N,L> {
     this.el = el;
   }
   
-  static protected <N,L> void clear_one (Graph<N, L> graph, N node) {
-    for (Edge<N,L> e : graph.edges (node))
-      graph.remove (node, e.to ());
-  }
   static protected <N,L> void clear (Graph<N, L> graph) {
-    for (N n : graph) {
-      clear_one (graph, n);
-    }
+    graph.clear_all_edges ();
   }
   
   public abstract void rewire ();
