@@ -1,7 +1,7 @@
 <project name="org.nongnu.multigraph" default="compile">
 
     <property name="src.dir"     value="src"/>
-    <property name="build.dir"   value="bin"/>
+    <property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir"     value="${build.dir}/jar"/>
     <property name="tests.dir"   value="${build.dir}/tests"/>
