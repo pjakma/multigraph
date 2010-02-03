@@ -94,6 +94,14 @@ public interface Graph<N,L> extends Set<N> {
    */
   boolean remove (N node);
   
+  /**
+   * Clear all edges from the graph.
+   * 
+   * This can NOT be done by iterating over the sets of edges from each node,
+   * as that will raise a concurrent modification exception.
+   */
+  void clear_all_edges ();
+  
   /* Query methods, beyond those available through Set<N> */
   /**
    * The out-degree for a give node. I.e. the number of edges leaving
@@ -120,13 +128,17 @@ public interface Graph<N,L> extends Set<N> {
    * @param node The given node, which is to be queried.
    * @return The set of nodes that succeed the given node. I.e. those nodes 
    *         to which the given node has an edge. The returned set is read-only
-   *         and may not be modified.
+   *         and may not be modified. The returned set will be null
+   *         if the node does not exist, and will be the empty set if
+   *         the node exists but has no successors.
    */
   Set<N> successors (N from);
   /**
    * @param node The given node, which is to be queried.
    * @return The set of edges that go out from this node. The returned set is 
-   *          read-only and may not be modified.
+   *          read-only and may not be modified. The set will be null
+   *          if the node does not exist, and an empty set if the node
+   *          exists but has no edges.
    */
   Set<Edge<N,L>> edges (N from);
   
@@ -135,7 +147,7 @@ public interface Graph<N,L> extends Set<N> {
    * @param from Which node we want to query edges from.
    * @param to The node to which we're looking for an edge.
    * @return An immutable Collection of edges going from 
-   *         @<em>from</em>-&gt;<em>to</em> if any exist, 
+   *         @<em>from</em>-&gt;<em>to</em> if the from node exists, 
    *         or {@code null} otherwise.
    * @see #edges(Object)
    */
@@ -148,4 +160,16 @@ public interface Graph<N,L> extends Set<N> {
    *         or {@code null} otherwise.
    */
   Edge<N,L> edge (N from, N to);
+
+  /**
+   * Find the edge with the given label, from the one node to another
+   * node, if it exists.
+   * @param from Which node we want to query edges from.
+   * @param to The node to which we're looking for an edge.
+   * @param label The label of the edge we're interested in.
+   * @return The edge going from <em>from</em>-&gt;<em>to</em> specified
+   *         by the given label, if it exists,
+   *         or {@code null} otherwise.
+   */
+  Edge<N,L> edge (N from, N to, L label);
 }
