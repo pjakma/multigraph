@@ -30,7 +30,7 @@ public class SimpleGraph<N,L> extends SimpleDiGraph<N, L> {
       return false;
     
     if (!super._remove (to, from, label))
-      throw new java.lang.AssertionError ("Unable to remove other half of edge!");
+      throw new AssertionError ("Unable to remove other half of edge!");
     
     return true;
   }
