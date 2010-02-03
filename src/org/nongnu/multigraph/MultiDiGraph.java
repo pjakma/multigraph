@@ -34,16 +34,11 @@ public class MultiDiGraph<N,L>
 
   // Hash of user-specific N-type node objects to internal Node objects
   HashMap<N,Node<N,L>> nodes;
-  HashMap<L,Edge<N,L>> edges;
   private Set<N> nodeset;
-  private Set<L> edgeset;
   
   public MultiDiGraph () {
     nodes = new HashMap<N,Node<N,L>> ();
     nodeset = nodes.keySet();
-    
-    edges = new HashMap<L,Edge<N,L>> ();
-    edgeset = edges.keySet ();
   }
   
   /* Get the internal Node for the given user_node, creating as needs be */
@@ -65,7 +60,7 @@ public class MultiDiGraph<N,L>
     assert nf != null;
     assert nt != null;
     assert label != null;
-	
+    
     nf.set (nt, weight == 0 ? weight : 1, label);
   }
   
@@ -96,17 +91,17 @@ public class MultiDiGraph<N,L>
     Node<N,L> nf, nt = null;
     
     if (from == null)
-    	throw new NullPointerException ("remove: 'from' must not be null");
+      throw new NullPointerException ("remove: 'from' must not be null");
     if (to == null)
       throw new NullPointerException ("remove: 'from' must not be null");
     
     if ((nf = nodes.get (from)) == null)
-    	return false;
+      return false;
     
     nt = ((to == from) ? nf : nodes.get (to));
     
     if (nt == null)
-    	return false;
+      return false;
     
     // Dispatch to appropriate method
     if (label != null)
@@ -122,41 +117,65 @@ public class MultiDiGraph<N,L>
   public synchronized boolean remove (N from, N to) {
     return _remove (from, to, null);
   }
-    
+  
   public synchronized Set<Edge<N,L>> edges (N from) {
     Node<N,L> n;
-        
-    n = nodes.get (from);
+    Set<Edge<N,L>> edges;
     
-    return n.edges ();
+    n = nodes.get (from);
+
+    if (n == null)
+      return null;
+
+    return Collections.unmodifiableSet (n.edges ());
   }
   
   public synchronized Collection<Edge<N,L>> edges (N from, N to) {
     Node<N,L> nf, nt;
+    Collection<Edge<N,L>> edges;
     
     if ((nf = nodes.get (from)) == null)
       return null;
     if ((nt = nodes.get ((to))) == null)
       return null;
     
-    return nf.edges (nt);
+    return Collections.unmodifiableCollection (nf.edges (nt));
   }
   
   public Edge<N, L> edge (N from, N to) {
     Collection<Edge<N,L>> edges = edges (from, to);
-    
+
+    if (edges == null)
+      return null;
+
     for (Edge<N,L> e : edges)
       return e;
     
     return null;
   }
-  
+
+  public Edge<N, L> edge (N from, N to, L label) {
+    Collection<Edge<N,L>> edges = edges (from, to);
+
+    if (edges == null)
+      return null;
+    
+    for (Edge<N,L> e : edges)
+      if (e.label () == label)
+        return e;
+
+    return null;
+  }
+
   public synchronized Set<N> successors (N node) {
     Set<N> sc = new HashSet<N> ();
     Node<N,L> n;
+    Set<Edge<N,L>> edges;
 
     assert node != null;
-    n = nodes.get (node);
+    
+    if ((n = nodes.get (node)) == null)
+      return null;
     
     for (Edge<N,L> e : n.edges ())
       sc.add (e.to());
@@ -165,7 +184,7 @@ public class MultiDiGraph<N,L>
   }
 
   public synchronized int edge_outdegree (N node) {
-    return get_node(node).edge_outdegree;
+    return get_node(node).edge_outdegree ();
   }
   
   public synchronized int nodal_outdegree (N node) {
@@ -249,13 +268,44 @@ public class MultiDiGraph<N,L>
   public Iterator<N> iterator() { return nodeset.iterator (); }
   
   /* XXX: removes havn't been tested */
-  public boolean remove (Object o) { 
-    return nodeset.remove (o);
+  @SuppressWarnings ("unchecked")
+  public void clear_all_edges () {
+    for (Node<N,L> n : nodes.values ())
+      n.clear ();
+  }
+
+  /* same reasoning as above for the unchecked */
+  @SuppressWarnings ("unchecked")
+  public synchronized boolean remove (Object o) {
+    Node<N,L> node = nodes.get ((N) o);
+    boolean ret = false;
+
+    if (node == null)
+      return false;
+
+    for (Object oe : node.edges ().toArray ()) {
+      Edge<N,L> e = (Edge<N,L>) oe;
+      if (remove (e.from (), e.to (), e.label ()))
+        ret = true;
+    }
+    
+    return nodeset.remove (o) ? true : ret;
   }
   public boolean removeAll (Collection<?> c) {
-    return nodeset.removeAll (c); 
+    int size1 = size ();
+    
+    for (Object o : c)
+      remove (o);
+    
+    return size1 == size ();
   }
   public boolean retainAll (Collection<?> c) {
-    return nodeset.retainAll (c);
+    int size1 = size ();
+    
+    for (N node : this)
+      if (!c.contains (node))
+        remove (node);
+    
+    return size1 == size ();
   }
 }

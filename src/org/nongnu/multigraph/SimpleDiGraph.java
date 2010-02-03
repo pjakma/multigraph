@@ -22,47 +22,37 @@ import java.util.Collection;
 /** Simple, directed edge graph: no loops allowed and no more than 1 edge between nodes. */
 public class SimpleDiGraph<N, L> extends MultiDiGraph<N, L> {
 
-	@Override
-	protected void _set(N from, N to, int weight, L label) {
-		Node<N,L> nf = get_node (from), nt;
-		Collection<Edge<N,L>> edges;
+  @Override
+  protected void _set(N from, N to, int weight, L label) {
+    Node<N,L> nf = get_node (from), nt;
+    Collection<Edge<N,L>> to_edges;
 
-		if (from == to)
-			throw new UnsupportedOperationException ("Edges to self"
-													 + " are not allowed!");
-		
-		if ((nt = this.nodes.get (to)) != null &&
-			(edges = nf.edges (nt)) != null &&
-			edges.size () > 0) {
-			
-			/* SimpleGraph should never have multiple edges between nodes */
-			assert edges.size () == 1 : edges.size ();
-			
-			/* An edge already exists. If this is an attempt to add a 2nd edge
-			 * between nodes, then it's an error.
-			 */
-			for (Edge<N,L> edge : edges) {
-				if (edge.label () != label)
-					throw new UnsupportedOperationException (
-							"Multiple edges between nodes are not allowed");
-			}
-			
-		}
-		
-		if (nt == null)
-			nt = get_node (to);
-		
-		super._set (nt, nf, weight, label);
-		super._set (nf, nt, weight, label);
-	}
-
-	@Override
-	protected boolean _remove (N from, N to, L label) {
-		boolean ret1 = super._remove (from, to, label);
-		boolean ret2 = super._remove (to, from, label);
-
-		assert (ret1 == ret2);
-
-		return ret1;
-	}
+    if (from == to)
+      throw new UnsupportedOperationException ("Edges to self"
+                           + " are not allowed!");
+    
+    if ((nt = this.nodes.get (to)) != null &&
+      (to_edges = nf.edges (nt)) != null &&
+      to_edges.size () > 0) {
+      
+      /* SimpleGraph should never have multiple edges between nodes */
+      assert to_edges.size () == 1 : to_edges.size ();
+      
+      /* An edge already exists. If this is an attempt to add a 2nd edge
+       * between nodes, then it's an error.
+       */
+      for (Edge<N,L> edge : to_edges) {
+        if (edge.label () != label)
+          throw new UnsupportedOperationException (
+              "Multiple edges between nodes are not allowed");
+      }
+      
+    }
+    
+    if (nt == null)
+      nt = get_node (to);
+    
+    super._set (nt, nf, weight, label);
+    super._set (nf, nt, weight, label);
+  }
 }
