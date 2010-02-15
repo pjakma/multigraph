@@ -17,12 +17,10 @@
  */
 package org.nongnu.multigraph;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.nongnu.multigraph.Graph;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestMultiDiGraph {
   Graph<String,String> g = new MultiDiGraph<String,String> ();
@@ -76,7 +74,10 @@ public class TestMultiDiGraph {
       int nd = g.nodal_outdegree (s);
       int ed = g.edge_outdegree (s);
       num++;
-
+      
+      assertTrue ("Edge degree must be at least as great as nodal degree",
+                  ed >= nd);
+      
       if (g.successors (s) != null
           || g.edges (s) != null)
         assertTrue ("If any edge is valid, all must be",
