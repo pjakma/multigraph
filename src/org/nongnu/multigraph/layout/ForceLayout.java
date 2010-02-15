@@ -44,12 +44,15 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
   private double k;
   private double mintemp = 0.001;
   private double C = 1;
+  private double minkve = 10000;
+  private double jiggle = 0.1;
 
   private double temperature = 1.2;
-  private double decay = 0.9;
+  private double decay = 0.92;
   
   private void _setk () {
-    k = C * Math.sqrt ((bound.getWidth () * bound.getHeight ())/graph.size ());
+    double min = Math.min (bound.getWidth (), bound.getHeight ());
+    k = C * Math.sqrt (min*min/graph.size ());
     debug.println ("k: " + k);
   }
   
@@ -123,7 +126,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
    * <p>
    * The default is 0.001
    * @param mintemp The minimum temperature that can apply. Generally this
-   *                should be 1 or less.
+   *                should be 1 or less. 
    */
   public ForceLayout<N,L> setMintemp (double mintemp) {
     this.mintemp = mintemp;
@@ -149,19 +152,52 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
   }
   
   /**
+   * @param minkve Sets the minimum sum of kinetic energy values, below which
+   *               the algorithm will be considered to no longer have any
+   *               movement. 
+   * <p>
+   * Default: 0.1
+   */
+  public ForceLayout<N,L> setMinkve (double minkve) {
+    this.minkve = minkve;
+    return this;
+  }
+  
+  /**
    * @param C Sets the C parameter of the algorithm, which is used to scale 
    * the k factor of the algorithm. Increasing this factor will magnify the
-   * repulsive and attractive forces, decreasing will minimise them. 
+   * repulsive and attractive forces, decreasing will minimise them. Values
+   * around 1 will try balance nodes around the area. Values above will
+   * tend to force many nodes against the boundary. Values below 1 will
+   * tend to cause nodes to cluster more toward centre of the area.
    * <p>
    * Default: 1
    */
   public ForceLayout<N,L> setC (double C) {
     this.C = C;
+    _setk ();
     return this;
   }
   
+  /**
+   * @param jiggle Adds some entropy to the algorithm. Higher values
+   *               add more jiggle. Recommended value is between
+   *               0 and 1. Defaults to 0.1. 
+   *               
+   *               Note that increasing this value will increase the
+   *               background 'heat' of the algorithm, and you may need
+   *               increase minkve if you're depending on it rather
+   *               than maxiterations.
+   * 
+   */
+  public void setJiggle (double jiggle) {
+    this.jiggle = jiggle;
+  }
+  
   public boolean layout (float interval) {
-    double kve = 0;
+    double sumkve = 0;
+    double maxkve = 0;
+    Random r = new Random ();
     
     debug.println ("force-layout start");
     
@@ -172,7 +208,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
       Vector2D disp = n.getVelocity ();
       disp.setLocation (0, 0);
       
-      debug.println ("node: " + n + ", pos: " + n.getPosition ());
+      debug.printf ("node: %s, pos: %s\n", n, n.getPosition ());
       
       for (N other : graph) {
         if (other == n)
@@ -183,13 +219,12 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
          */
         if (other.getPosition ().distanceSq (n.getPosition ()) <= 1) {
           Vector2D vrandom = new Vector2D (2, 0);
-          Random r = new Random ();
           vrandom.rotate (r.nextInt (360));
           other.getPosition ().plus (vrandom);
         }
         
-        debug.println ("\trepulsion with " + other 
-                        + ", " + other.getPosition ());
+        debug.printf ("\trepulsion with %s, %s\n",
+                       other, other.getPosition ());
         
         Vector2D delta = new Vector2D (n.getPosition ());
         delta.minus (other.getPosition ());
@@ -214,7 +249,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
         if (e.to () == e.from ())
           continue;
         
-        debug.println ("\tattraction with " + e.to ());
+        debug.printf ("\tattraction with %s\n", e.to ());
         
         Vector2D delta = new Vector2D (n.getPosition ());
         delta.minus (e.to ().getPosition ());
@@ -222,6 +257,13 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
         debug.println ("\t\tdelta1: " + delta + ", len " + delta.length ());
         
         double attrf = attraction (delta.length ());
+        /* add a little entropy, to try avoid perfectly balancing
+         * forces on a node keeping it stable in a local optimum, when
+         * ideally we'd like things to jiggle a little so it can maybe 'pop'
+         * out and move to the next optimum, hopefully.
+         */
+        attrf *= Math.max (0, r.nextGaussian ())*jiggle + 1;
+        
         debug.println ("\t\tattrf: " + attrf);
         
         delta.normalise ();
@@ -233,22 +275,29 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
         debug.println ("\tdisp: " + disp);
       }
       
+      /* Apply a little bit of entropy to the direction of the 
+       * resultant velocity, see above. 
+       * 
+       * The std.dev is 1, so /3 keeps the value between -1 and 1 for
+       * ~99% of results. Then multiply by range of +-/ degrees you want.
+       */
+      disp.rotate (Math.toRadians (r.nextGaussian ()/3 * 10 * jiggle));
       debug.println ("\tresultant v: " + disp);
       
       Vector2D pos = n.getPosition ();
       Vector2D v = n.getVelocity ();
       
-      debug.println ("node pos: " + pos);
-      debug.println ("\tv: " + v);
+      debug.printf ("node pos: %s\n", pos);
+      debug.printf ("\tv: %s\n", v);
       
       temperature = Math.max (decay (temperature), mintemp);
       v.times (interval * temperature);
       
-      debug.println ("\tv2: " + v);
+      debug.printf ("\tv2: %s\n", v);
       
       pos.plus (v);
       
-      debug.println ("\tp2: " + pos);
+      debug.printf ("\tp2: %s\n", pos);
       
       /* XXX: Lose lots of energy by dumbly clipping at the boundary, leads
        * to nodes happily clumping together at the walls, particularly with
@@ -259,14 +308,17 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
       pos.x = Math.min (Math.max (-bound.width/2, pos.x), bound.width/2);
       pos.y = Math.min (Math.max (-bound.height/2, pos.y), bound.height/2);
       
-      double mag = v.magnitude ();      
-      kve += n.getMass () * mag * mag;
+      double mag = v.magnitude ();    
+      double kve = n.getMass () * mag * mag;
+      sumkve += kve;
+      maxkve = Math.max (maxkve, kve);
       
       debug.println ("\tresult: " + pos);
     }
     
-    debug.println ("kve: " + kve);
+    debug.println ("kve:    " + sumkve);
+    debug.println ("maxkve: " + maxkve);
     
-    return kve > 1;
+    return sumkve > minkve;
   }
 }
