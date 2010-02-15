@@ -267,8 +267,6 @@ public class MultiDiGraph<N,L>
   public <N> N[] toArray (N[] a) { return nodeset.toArray (a); }
   public Iterator<N> iterator() { return nodeset.iterator (); }
   
-  /* XXX: removes havn't been tested */
-  @SuppressWarnings ("unchecked")
   public void clear_all_edges () {
     for (Node<N,L> n : nodes.values ())
       n.clear ();
