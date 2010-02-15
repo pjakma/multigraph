@@ -52,10 +52,14 @@ public class LatticeRewire<N, E> extends AbstractRewire<N, E> {
     RandomRewire.clear (graph);
     
     for (N n : graph) {
-      if (pn != null)
-        graph.set (pn, n, el.getLabel (pn, n));
-      if (prevrow[i] != null)
-        graph.set (prevrow[i], n, el.getLabel (prevrow[i], n));
+      E label;
+      
+      if (pn != null && (label = el.getLabel (pn, n)) != null)
+        graph.set (pn, n, label);
+      
+      if (prevrow[i] != null
+          && (label = el.getLabel (prevrow[i], n)) != null)
+        graph.set (prevrow[i], n, label);
       
       prevrow[i] = n;
       pn = n;

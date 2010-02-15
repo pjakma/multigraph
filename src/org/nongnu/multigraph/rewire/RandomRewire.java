@@ -62,7 +62,10 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
       } while (to == node);
       
       try {
-        graph.set (node, to, el.getLabel (node, to));
+        L label;
+        
+        if ((label = el.getLabel (node, to)) != null)
+          graph.set (node, to, label);
       } catch (UnsupportedOperationException e) {}
     }
   }
@@ -81,7 +84,12 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
   
   @SuppressWarnings("unchecked")
   public void rewire () {
-    N[] nodes = (N[]) graph.toArray (new Object[0]);
+    N[] nodes;
+    
+    if (mindegree > graph.size () - 1)
+      throw new IllegalArgumentException ("mindegree too high for size of graph");
+    
+    nodes = (N[]) graph.toArray (new Object[0]);
 
     RandomRewire.clear (graph);
 

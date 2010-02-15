@@ -36,11 +36,8 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
     int split;
     int sigmakj = 0;
     
-    RandomRewire.clear (graph);
-    
-    if (graph.size () < 2)
-      return;
-    
+    clear (graph);
+
     graph.toArray (nodes);
     
     /* The first 2 nodes are a special case, because they are not attached
