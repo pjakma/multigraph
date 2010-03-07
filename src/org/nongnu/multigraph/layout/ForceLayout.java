@@ -43,12 +43,12 @@ import org.nongnu.multigraph.debug;
 public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
   private double k;
   private double mintemp = 0.001;
-  private double C = 1;
-  private double minkve = 10000;
+  private double C = 0.5;
+  private double minkve = 0.001;
   private double jiggle = 0.1;
 
   private double temperature = 1.2;
-  private double decay = 0.92;
+  private double decay = 0.96;
   
   private void _setk () {
     double min = Math.min (bound.getWidth (), bound.getHeight ());
