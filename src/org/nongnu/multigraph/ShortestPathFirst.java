@@ -40,7 +40,7 @@ public class ShortestPathFirst<N,L> {
       if (path != null)
         this.parents.add (path);
       this.cost = cost;
-      debug.println ("SPFnode: created " + this);      
+      debug.printf ("SPFnode: created %s\n", this);      
     }
     
     public int compareTo (SPFnode<N,L> v) {
@@ -68,6 +68,9 @@ public class ShortestPathFirst<N,L> {
     spfnodes = new HashMap<N,SPFnode<N,L>> ();
     q = new PriorityQueue<SPFnode<N,L>> ();
     this.g = g;
+    
+    if (g == null)
+      throw new IllegalArgumentException ("graph must not be null");
   }
   
   /* Explore the node V, adding its child nodes to the queue and relaxing
@@ -75,14 +78,18 @@ public class ShortestPathFirst<N,L> {
    */
   private void explore (SPFnode<N,L> v) {
     SPFnode<N,L> w;
+    Set<Edge<N,L>> edges;
     
-    debug.println ("SPF: exploring " + v);
+    debug.printf ("SPF: exploring %s\n", v);
+    
+    if ((edges = g.edges (v.n)) == null)
+      return;
     
     /* For every child, W, of V */
-    for (Edge<N,L> e : g.edges (v.n)) {
+    for (Edge<N,L> e : edges) {
       /* Relax the edge from V->W */
       
-      debug.println ("SPF: relaxing " + e);
+      debug.printf ("SPF: relaxing %s\n", e);
       
       if ((w = spfnodes.get (e.to ())) == null) {
         /* W is newly discovered, init and queue */
@@ -94,11 +101,11 @@ public class ShortestPathFirst<N,L> {
         w.cost = e.weight() + v.cost;
         w.parents.clear();
         w.parents.add (e);
-        debug.println ("SPF: lower cost path found " + w);
+        debug.printf ("SPF: lower cost path found %s\n", w);
       } else if (e.weight() + v.cost == w.cost) {
         /* V->W is an equal cost path, add to W's parents */
         w.parents.add (e);
-        debug.println ("SPF: equal cost path found " + w);
+        debug.printf ("SPF: equal cost path found %s\n", w);
       }
     }
     
@@ -109,8 +116,16 @@ public class ShortestPathFirst<N,L> {
     }
   }
   
+  /**
+   * Construct the SPF tree rooted at the given node, to be used for
+   * subsequent shortest-path query call.
+   * @param root Root node for the Shortest-Path First tree.
+   */
   public void run (N root) {
     SPFnode<N,L> v;
+    
+    if (root == null)
+      throw new IllegalArgumentException ("root argument must not be null");
     
     /* init */
     this.root = root;
@@ -132,11 +147,15 @@ public class ShortestPathFirst<N,L> {
     debug.println ("SPF: done");
   }
   
-  /* Return the path from the root node to the 'to' node, as a List
-   * of Edges.
+  /**
+   * Return the path from the root node to the 'to' node, as a List
+   * of Edges, in the current SPF tree.
    *
    * While our SPF supports equal-cost, multiple-paths, we only return
    * one path, for simplicity's sake.
+   * 
+   * @param to The node to query a path for
+   * @return List of Edges forming a path to the given node
    */
   public List<Edge<N,L>> path (N to) {
     SPFnode<N,L> s;
@@ -157,6 +176,28 @@ public class ShortestPathFirst<N,L> {
     }
     
     return l;
+  }
+  
+  /**
+   * Return the next-hop node for the shortest path from the root node to 
+   * the given node.
+   * @param to Destination node to query path for
+   * @return The best next-hop from the root
+   */
+  public N nexthop (N to) {
+    SPFnode<N,L> s;
+    N prev = null;
+    
+    /* The SPF tree points from child to parent. Walk from 'to' till we get
+     * to the root (which has no parents), building the path-List.
+     */
+    while ((s = spfnodes.get (to)) != null && s.parents.size() > 0) {
+      /* Follow the first path, if there's more than one */
+      prev = to;
+      to = s.parents.getFirst ().from ();
+    }
+    
+    return prev;
   }
   
   public N root () {
