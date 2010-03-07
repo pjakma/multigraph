@@ -89,6 +89,7 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
     if (mindegree > graph.size () - 1)
       throw new IllegalArgumentException ("mindegree too high for size of graph");
     
+    graph.plugObservable ();
     nodes = (N[]) graph.toArray (new Object[0]);
 
     RandomRewire.clear (graph);
@@ -97,5 +98,7 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
       /* work around fact you can't have generic typed arrays */
       rewire_one (node, mindegree, nodes);
     }
+    
+    graph.unplugObservable ();
   }
 }

@@ -49,6 +49,7 @@ public class LatticeRewire<N, E> extends AbstractRewire<N, E> {
     N pn = null;
     int i = 0;
     
+    graph.plugObservable ();
     RandomRewire.clear (graph);
     
     for (N n : graph) {
@@ -68,5 +69,6 @@ public class LatticeRewire<N, E> extends AbstractRewire<N, E> {
       if (i == 0)
         pn = null;
     }
+    graph.unplugObservable ();
   }
 }

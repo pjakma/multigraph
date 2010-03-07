@@ -36,8 +36,8 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
     int split;
     int sigmakj = 0;
     
+    graph.plugObservable ();
     clear (graph);
-
     graph.toArray (nodes);
     
     /* The first 2 nodes are a special case, because they are not attached
@@ -90,5 +90,6 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
       if (was_added)
         split++;
     }
+    graph.unplugObservable ();
   }
 }
