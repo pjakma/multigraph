@@ -24,12 +24,14 @@ package org.nongnu.multigraph.layout;
  *
  */
 public interface PositionableNode {
-  public Vector2D getPosition ();
-  public Vector2D getVelocity ();
+  Vector2D getPosition ();
+  Vector2D getVelocity ();
   
-  public float getSize ();
-  public void setSize (float s);
+  float getSize ();
+  void setSize (float s);
   
-  public float getMass ();
-  public void setMass (float m);
+  float getMass ();
+  void setMass (float m);
+  
+  boolean isMovable (); 
 }
