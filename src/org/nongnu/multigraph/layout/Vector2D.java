@@ -20,7 +20,8 @@ package org.nongnu.multigraph.layout;
 import java.awt.geom.Point2D;
 
 public class Vector2D extends Point2D.Double {
-  
+  private static final long serialVersionUID = 8144499273628707805L;
+
   public void normalise () {
     double dist = distance (0, 0);
     x /= dist;
