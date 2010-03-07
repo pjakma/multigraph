@@ -29,8 +29,8 @@ import org.nongnu.multigraph.Graph;
  *
  */
 public abstract class AbstractRewire<N,L> {
-  Graph<N,L> graph;
-  EdgeLabeler<N,L> el;
+  protected Graph<N,L> graph;
+  protected EdgeLabeler<N,L> el;
   
   public AbstractRewire (Graph<N,L> graph, EdgeLabeler<N,L> el) {
     this.graph = graph;
