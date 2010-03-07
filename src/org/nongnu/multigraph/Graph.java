@@ -172,4 +172,31 @@ public interface Graph<N,L> extends Set<N> {
    *         or {@code null} otherwise.
    */
   Edge<N,L> edge (N from, N to, L label);
+  
+  /* Why is there no Observable interface ? */
+  /**
+   * @see java.util.Observable
+   */
+  void addObserver(Observer o);
+  int  countObservers();
+  void  deleteObserver(Observer o);
+  void deleteObservers();
+  boolean hasChanged();
+  void notifyObservers();
+  void notifyObservers(Object arg);
+  /**
+   * "Plug" delivery of Observable events to observers, so that any such events
+   * are instead queued up internally, and potentially coalesced, rather than
+   * delivered to Observers.
+   * 
+   * This potentially allows bulk updates to be made to the graph more efficiently.
+   */
+  void plugObservable ();
+  /**
+   * Unplug the delivery of Observable events. Stored events will be delivered,
+   * though potentially coalesced, so that multiple events for the same object
+   * are collapsed into one. Further, a general "notifyObservers" event will
+   * coalesce with and subsume *all* events for specific objects. 
+   */
+  void unplugObservable ();
 }

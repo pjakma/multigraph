@@ -52,6 +52,10 @@ public class SimpleDiGraph<N, L> extends MultiDiGraph<N, L> {
     if (nt == null)
       nt = get_node (to);
     
+    setChanged ();
+    notifyObservers (from);
+    notifyObservers (to);
+    
     super._set (nt, nf, weight, label);
     super._set (nf, nt, weight, label);
   }

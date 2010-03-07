@@ -30,6 +30,7 @@ import java.util.*;
  * type-compatible.
  */
 public class MultiDiGraph<N,L>
+       extends Observable
        implements Graph<N,L> {
 
   // Hash of user-specific N-type node objects to internal Node objects
@@ -78,6 +79,10 @@ public class MultiDiGraph<N,L>
       nt = get_node (to);
     
     _set (nf, nt, weight, label);
+    
+    setChanged ();
+    notifyObservers (from);
+    notifyObservers (to);
   }
   
   // Set an edge between the two nodes (the nodes are added as required)
@@ -103,9 +108,14 @@ public class MultiDiGraph<N,L>
     if (nt == null)
       return false;
     
+    setChanged ();
+    notifyObservers (from);
+    
     // Dispatch to appropriate method
     if (label != null)
       return nf.remove (nt, label);
+    
+    notifyObservers (to);
     
     return nf.remove (nt);
   }
@@ -252,6 +262,8 @@ public class MultiDiGraph<N,L>
   }
   public void clear () { 
     nodes.clear ();
+    setChanged ();
+    notifyObservers ();
   }
   public boolean contains (Object o) { return nodeset.contains (o); }
   public boolean containsAll (Collection<?> c) { 
@@ -270,6 +282,9 @@ public class MultiDiGraph<N,L>
   public void clear_all_edges () {
     for (Node<N,L> n : nodes.values ())
       n.clear ();
+    
+    setChanged ();
+    notifyObservers ();
   }
 
   /* same reasoning as above for the unchecked */
@@ -286,6 +301,8 @@ public class MultiDiGraph<N,L>
       if (remove (e.from (), e.to (), e.label ()))
         ret = true;
     }
+    
+    notifyObservers (o);
     
     return nodeset.remove (o) ? true : ret;
   }
@@ -306,4 +323,49 @@ public class MultiDiGraph<N,L>
     
     return size1 == size ();
   }
+  
+  /* Extension to Observable to coalesce updates somewhat */
+  private boolean plugObservable = false;
+  private boolean notifyAll = false;
+  private Set<Object> notifyObjs = new HashSet<Object> ();
+  
+  public void plugObservable () {
+    plugObservable = true;
+    notifyAll = false;
+  }
+  public void unplugObservable () {
+    if (!plugObservable)
+      return;
+    
+    plugObservable = false;
+    
+    if (notifyAll)
+      super.notifyObservers ();
+    else
+      for (Object o : notifyObjs)
+        super.notifyObservers (o);
+    notifyObjs.clear ();
+  }
+  
+  @Override
+  public void notifyObservers () {
+    if (!plugObservable) {
+      super.notifyObservers (null);
+      return;
+    }
+    notifyAll = true;
+  }
+
+  @Override
+  public void notifyObservers (Object arg) {
+    if (!plugObservable) {
+      if (arg == null)
+        notifyAll = true;
+      super.notifyObservers (arg);
+      return;
+    }
+    if (!notifyAll)
+      notifyObjs.add (arg);
+  }
+  
 }
