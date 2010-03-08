@@ -22,10 +22,12 @@ package org.nongnu.multigraph;
  * Simple, undirected graph: No loops allowed and 0 or 1 edges between nodes.
  * 
  * @see SimpleDiGraph
+ * @param N The type of the Nodes in the graph
+ * @param E The type of the Edges in the graph
  */
-public class SimpleGraph<N,L> extends SimpleDiGraph<N, L> {
+public class SimpleGraph<N,E> extends SimpleDiGraph<N, E> {
   @Override
-  protected boolean _remove (N from, N to, L label) {
+  protected boolean _remove (N from, N to, E label) {
     if (!super._remove (from, to, label))
       return false;
     
@@ -36,7 +38,7 @@ public class SimpleGraph<N,L> extends SimpleDiGraph<N, L> {
   }
 
   @Override
-  protected void _set (N from, N to, int weight, L label) {
+  protected void _set (N from, N to, int weight, E label) {
     super._set (from, to, weight, label);
     super._set (to, from, weight, label);
   }

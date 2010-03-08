@@ -26,28 +26,31 @@ import java.util.*;
  * including between the same node.
  * <p>
  * XXX: As SimpleDiGraph inherits from this, this class probably should not be
- * public. We don't really want different restrictions of the graph to be 
+ * public. We don't really want different restrictions of the Graph to be 
  * type-compatible.
+ * 
+ * @param N The type of the Nodes in the graph
+ * @param E The type of the Edges in the graph
  */
-public class MultiDiGraph<N,L>
+public class MultiDiGraph<N,E>
        extends Observable
-       implements Graph<N,L> {
+       implements Graph<N,E> {
 
   // Hash of user-specific N-type node objects to internal Node objects
-  HashMap<N,Node<N,L>> nodes;
+  HashMap<N,Node<N,E>> nodes;
   private Set<N> nodeset;
   
   public MultiDiGraph () {
-    nodes = new HashMap<N,Node<N,L>> ();
+    nodes = new HashMap<N,Node<N,E>> ();
     nodeset = nodes.keySet();
   }
   
   /* Get the internal Node for the given user_node, creating as needs be */
-  final Node<N,L> get_node (N user_node) {
-    Node<N,L> n = nodes.get (user_node);
+  final Node<N,E> get_node (N user_node) {
+    Node<N,E> n = nodes.get (user_node);
     
     if (n == null) {
-      n = new Node<N,L> (user_node);
+      n = new Node<N,E> (user_node);
       nodes.put (user_node, n);
     }
     
@@ -57,7 +60,7 @@ public class MultiDiGraph<N,L>
   /* This is something I'd stick in a macro in C, but dont really have them with
    * java..
    */
-  final void _set (Node<N,L> nf, Node<N,L> nt, int weight, L label) {
+  final void _set (Node<N,E> nf, Node<N,E> nt, int weight, E label) {
     assert nf != null;
     assert nt != null;
     assert label != null;
@@ -66,8 +69,8 @@ public class MultiDiGraph<N,L>
   }
   
   /* Exported to package so that simpler graphs can be subclassed from this */
-  protected void _set (N from, N to, int weight, L label) {
-    Node<N,L> nf, nt = null;
+  protected void _set (N from, N to, int weight, E label) {
+    Node<N,E> nf, nt = null;
     
     assert (from != null);
     
@@ -86,14 +89,14 @@ public class MultiDiGraph<N,L>
   }
   
   // Set an edge between the two nodes (the nodes are added as required)
-  public synchronized void set (N from, N to, L label)
+  public synchronized void set (N from, N to, E label)
     { _set (from, to, 1, label); }
   // Same, but for a weighted edge
-  public synchronized void set (N from, N to, L label, int weight)
+  public synchronized void set (N from, N to, E label, int weight)
     { _set (from, to, weight, label); }
   
-  protected boolean _remove (N from, N to, L label) {
-    Node<N,L> nf, nt = null;
+  protected boolean _remove (N from, N to, E label) {
+    Node<N,E> nf, nt = null;
     
     if (from == null)
       throw new NullPointerException ("remove: 'from' must not be null");
@@ -120,7 +123,7 @@ public class MultiDiGraph<N,L>
     return nf.remove (nt);
   }
   
-  public synchronized boolean remove (N from, N to, L label) {
+  public synchronized boolean remove (N from, N to, E label) {
     return _remove (from, to, label);
   }
   
@@ -128,9 +131,9 @@ public class MultiDiGraph<N,L>
     return _remove (from, to, null);
   }
   
-  public synchronized Set<Edge<N,L>> edges (N from) {
-    Node<N,L> n;
-    Set<Edge<N,L>> edges;
+  public synchronized Set<Edge<N,E>> edges (N from) {
+    Node<N,E> n;
+    Set<Edge<N,E>> edges;
     
     n = nodes.get (from);
 
@@ -140,9 +143,9 @@ public class MultiDiGraph<N,L>
     return Collections.unmodifiableSet (n.edges ());
   }
   
-  public synchronized Collection<Edge<N,L>> edges (N from, N to) {
-    Node<N,L> nf, nt;
-    Collection<Edge<N,L>> edges;
+  public synchronized Collection<Edge<N,E>> edges (N from, N to) {
+    Node<N,E> nf, nt;
+    Collection<Edge<N,E>> edges;
     
     if ((nf = nodes.get (from)) == null)
       return null;
@@ -152,25 +155,25 @@ public class MultiDiGraph<N,L>
     return Collections.unmodifiableCollection (nf.edges (nt));
   }
   
-  public Edge<N, L> edge (N from, N to) {
-    Collection<Edge<N,L>> edges = edges (from, to);
+  public Edge<N, E> edge (N from, N to) {
+    Collection<Edge<N,E>> edges = edges (from, to);
 
     if (edges == null)
       return null;
 
-    for (Edge<N,L> e : edges)
+    for (Edge<N,E> e : edges)
       return e;
     
     return null;
   }
 
-  public Edge<N, L> edge (N from, N to, L label) {
-    Collection<Edge<N,L>> edges = edges (from, to);
+  public Edge<N, E> edge (N from, N to, E label) {
+    Collection<Edge<N,E>> edges = edges (from, to);
 
     if (edges == null)
       return null;
     
-    for (Edge<N,L> e : edges)
+    for (Edge<N,E> e : edges)
       if (e.label () == label)
         return e;
 
@@ -179,15 +182,15 @@ public class MultiDiGraph<N,L>
 
   public synchronized Set<N> successors (N node) {
     Set<N> sc = new HashSet<N> ();
-    Node<N,L> n;
-    Set<Edge<N,L>> edges;
+    Node<N,E> n;
+    Set<Edge<N,E>> edges;
 
     assert node != null;
     
     if ((n = nodes.get (node)) == null)
       return null;
     
-    for (Edge<N,L> e : n.edges ())
+    for (Edge<N,E> e : n.edges ())
       sc.add (e.to());
     
     return sc;
@@ -205,7 +208,7 @@ public class MultiDiGraph<N,L>
     float avg = 0;
     int num = 0;
     
-    for (Node<N,L> n : nodes.values ()) {
+    for (Node<N,E> n : nodes.values ()) {
       num++;
       avg += (n.nodal_outdegree () - avg) / num;
     }
@@ -216,7 +219,7 @@ public class MultiDiGraph<N,L>
     int max = 0;
     int d;
     
-    for (Node<N,L> n : nodes.values ()) {
+    for (Node<N,E> n : nodes.values ()) {
       if ((d = n.nodal_outdegree ()) > max)
         max = d;
     }
@@ -226,9 +229,9 @@ public class MultiDiGraph<N,L>
   
   public synchronized String toString () {
     StringBuilder sb = new StringBuilder ();
-    for (Node<N,L> n : nodes.values ()) {
+    for (Node<N,E> n : nodes.values ()) {
       sb.append (n + "\n");
-      for (Edge<N,L> e : n.edges ())
+      for (Edge<N,E> e : n.edges ())
         sb.append ("\t" + e + "\n");        
     }
     return sb.toString ();
@@ -280,7 +283,7 @@ public class MultiDiGraph<N,L>
   public Iterator<N> iterator() { return nodeset.iterator (); }
   
   public void clear_all_edges () {
-    for (Node<N,L> n : nodes.values ())
+    for (Node<N,E> n : nodes.values ())
       n.clear ();
     
     setChanged ();
@@ -290,14 +293,14 @@ public class MultiDiGraph<N,L>
   /* same reasoning as above for the unchecked */
   @SuppressWarnings ("unchecked")
   public synchronized boolean remove (Object o) {
-    Node<N,L> node = nodes.get ((N) o);
+    Node<N,E> node = nodes.get ((N) o);
     boolean ret = false;
 
     if (node == null)
       return false;
 
     for (Object oe : node.edges ().toArray ()) {
-      Edge<N,L> e = (Edge<N,L>) oe;
+      Edge<N,E> e = (Edge<N,E>) oe;
       if (remove (e.from (), e.to (), e.label ()))
         ret = true;
     }

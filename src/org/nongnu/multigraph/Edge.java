@@ -22,18 +22,18 @@ package org.nongnu.multigraph;
  *
  * @author Paul Jakma
  *
- * @param <N> The type of the Node's in the graph.
- * @param <L> The type of the edge Label's in the graph.
+ * @param N The type of the Node's in the graph.
+ * @param E The type of the Edges in the graph
  */
-public class Edge<N,L> {
+public class Edge<N,E> {
   private int weight;
-  private final L label;
+  private final E label;
   private final N from, to;
   
   /* Constructor is deliberately left as package-scope. This object is meant
    * only to be viewed by users outside of MultiGraph - not created.
    */
-  Edge (N from, N to, int weight, L label) {
+  Edge (N from, N to, int weight, E label) {
     assert (weight > 0);
     this.weight = weight;
     this.label = label;
@@ -41,7 +41,7 @@ public class Edge<N,L> {
     this.to = to;
   }
   
-  public L label () {
+  public E label () {
     return label;
   }
   public N from () {

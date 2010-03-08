@@ -27,13 +27,14 @@ import org.nongnu.multigraph.Graph;
  * graph need not be continuous.
  * 
  * @author paul
- *
+ * @param <N> The type of the Nodes in the graph
+ * @param <E> The type of the Edges in the graph
  */
-public class RandomRewire<N,L> extends AbstractRewire<N,L> {
+public class RandomRewire<N,E> extends AbstractRewire<N,E> {
   Random r = new Random ();
   int mindegree = 1;
   
-  public RandomRewire (Graph<N, L> graph, EdgeLabeler<N, L> el) {
+  public RandomRewire (Graph<N, E> graph, EdgeLabeler<N, E> el) {
     super (graph, el);
   }
   /**
@@ -44,13 +45,13 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
    *           for new Edges.
    * @param mindegree The minimum out degree (edges to other nodes)
    */
-  public RandomRewire (Graph<N, L> graph, EdgeLabeler<N, L> el,
+  public RandomRewire (Graph<N, E> graph, EdgeLabeler<N, E> el,
                        int mindegree) {
     super (graph, el);
     this.mindegree = mindegree;
   }
   
-  private void rewire_one (N node,int mindegree, N [] nodes) {
+  private void rewire_one (N node, int mindegree, N [] nodes) {
     /* XXX: perhaps unnecessarily sigma(2N)
      * and worst-case is unbounded. Iterative algorithm, would be
      * better
@@ -62,7 +63,7 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
       } while (to == node);
       
       try {
-        L label;
+        E label;
         
         if ((label = el.getLabel (node, to)) != null)
           graph.set (node, to, label);
@@ -77,7 +78,7 @@ public class RandomRewire<N,L> extends AbstractRewire<N,L> {
    * @param mindegree The minimum out degree (edges to other nodes)
    * @return This RandomRewire instance.
    */
-  public RandomRewire<N,L> set_mindegree (int mindegree) {
+  public RandomRewire<N,E> set_mindegree (int mindegree) {
     this.mindegree = mindegree;
     return this;
   }

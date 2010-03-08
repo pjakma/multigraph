@@ -38,9 +38,11 @@ import org.nongnu.multigraph.debug;
  * <p>
  * The behaviour of the algorithm is can be tuned by a number of parameters.
  * Unfortunately, different graphs may require different values for certain
- * parameters for best effect. 
+ * parameters for best effect.
+ * @param <N> The type of the Nodes in the graph
+ * @param <E> The type of the Edges in the graph
  */
-public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
+public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
   private double k;
   private double mintemp = 0.001;
   private double C = 0.5;
@@ -56,7 +58,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
     debug.println ("k: " + k);
   }
   
-  public ForceLayout (Graph<N, L> graph, Dimension bound, int maxiterations) {
+  public ForceLayout (Graph<N, E> graph, Dimension bound, int maxiterations) {
     super (graph, bound, maxiterations);
     
     _setk ();
@@ -71,7 +73,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
    * @param initial_temperature The initial temperature scale factor to apply.
    * @see #setMintemp(double) for further discussion of temperature.
    */
-  public ForceLayout (Graph<N, L> graph, Dimension bound, int maxiterations,
+  public ForceLayout (Graph<N, E> graph, Dimension bound, int maxiterations,
                       double initial_temperature) {
     super (graph, bound, maxiterations);
     temperature = initial_temperature;
@@ -90,7 +92,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
    * @param C scalar to apply to the k constant, which is used to calculate
    *          the attractive and repulsive forces.
    */
-  public ForceLayout (Graph<N, L> graph, Dimension bound, int maxiterations,
+  public ForceLayout (Graph<N, E> graph, Dimension bound, int maxiterations,
                       double initial_temperature, double C) {
     super (graph, bound, maxiterations);
     temperature = initial_temperature;
@@ -128,7 +130,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
    * @param mintemp The minimum temperature that can apply. Generally this
    *                should be 1 or less. 
    */
-  public ForceLayout<N,L> setMintemp (double mintemp) {
+  public ForceLayout<N,E> setMintemp (double mintemp) {
     this.mintemp = mintemp;
     return this;
   }
@@ -146,7 +148,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
    *               decay.
    * @see setMintemp
    */
-  public ForceLayout<N,L> setDecay (double decay) {
+  public ForceLayout<N,E> setDecay (double decay) {
     this.decay = decay;
     return this;
   }
@@ -158,7 +160,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
    * <p>
    * Default: 0.1
    */
-  public ForceLayout<N,L> setMinkve (double minkve) {
+  public ForceLayout<N,E> setMinkve (double minkve) {
     this.minkve = minkve;
     return this;
   }
@@ -173,7 +175,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
    * <p>
    * Default: 1
    */
-  public ForceLayout<N,L> setC (double C) {
+  public ForceLayout<N,E> setC (double C) {
     this.C = C;
     _setk ();
     return this;
@@ -245,7 +247,7 @@ public class ForceLayout<N extends PositionableNode, L> extends Layout<N, L> {
         debug.println ("\tdisp after repf: " + disp);
       }
       
-      for (Edge<N, L> e : graph.edges (n)) {
+      for (Edge<N, E> e : graph.edges (n)) {
         if (e.to () == e.from ())
           continue;
         

@@ -19,13 +19,18 @@ package org.nongnu.multigraph;
 
 import java.util.Collection;
 
-/** Simple, directed edge graph: no loops allowed and no more than 1 edge between nodes. */
-public class SimpleDiGraph<N, L> extends MultiDiGraph<N, L> {
+/**
+ * Simple, directed edge graph: no loops allowed and no more than 1 
+ * edge between nodes.
+ * @param N The type of the Nodes in the graph
+ * @param E The type of the Edges in the graph
+ */
+public class SimpleDiGraph<N, E> extends MultiDiGraph<N, E> {
 
   @Override
-  protected void _set(N from, N to, int weight, L label) {
-    Node<N,L> nf = get_node (from), nt;
-    Collection<Edge<N,L>> to_edges;
+  protected void _set(N from, N to, int weight, E label) {
+    Node<N,E> nf = get_node (from), nt;
+    Collection<Edge<N,E>> to_edges;
 
     if (from == to)
       throw new UnsupportedOperationException ("Edges to self"
@@ -41,7 +46,7 @@ public class SimpleDiGraph<N, L> extends MultiDiGraph<N, L> {
       /* An edge already exists. If this is an attempt to add a 2nd edge
        * between nodes, then it's an error.
        */
-      for (Edge<N,L> edge : to_edges) {
+      for (Edge<N,E> edge : to_edges) {
         if (edge.label () != label)
           throw new UnsupportedOperationException (
               "Multiple edges between nodes are not allowed");

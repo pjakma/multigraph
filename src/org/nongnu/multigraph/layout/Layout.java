@@ -36,23 +36,23 @@ import org.nongnu.multigraph.Graph;
  * 
  * @author paul
  *
- * @param <N> The Node type of the graph, which must implement PositionableNode
- * @param <L> The Label type of the graph.
+ * @param <N> The type of the Nodes in the graph, which must implement PositionableNode
+ * @param <E> The type of the Edges in the graph
  */
-public abstract class Layout<N extends PositionableNode, L> {
-  Graph<N, L> graph;
+public abstract class Layout<N extends PositionableNode, E> {
+  Graph<N, E> graph;
   int maxiterations;
   int iterations = 0;
   Dimension bound;
   int border; /* border to leave, in points */
   
-  public Layout (Graph<N, L> graph, Dimension bound) {
+  public Layout (Graph<N, E> graph, Dimension bound) {
     this.graph = graph;
     this.maxiterations = 0;
     this.bound = bound;
   }
   
-  public Layout (Graph<N, L> graph, Dimension bound, int maxiterations) {
+  public Layout (Graph<N, E> graph, Dimension bound, int maxiterations) {
     this.graph = graph;
     this.maxiterations = maxiterations;
     this.bound = bound;

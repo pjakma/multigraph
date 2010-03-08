@@ -18,8 +18,12 @@
 package org.nongnu.multigraph.rewire;
 
 /**
- * Callback interface to forward the labelling of each new edge back to the user.
+ * Callback interface to forward the labelling of each new edge back to 
+ * the user.
+ * 
+ * @param <N> The type of the Nodes in the graph
+ * @param <E> The type of the Edges in the graph
  */
-public interface EdgeLabeler<N,L> {
-  public L getLabel (N from, N to);
+public interface EdgeLabeler<N, E> {
+  public E getLabel (N from, N to);
 }

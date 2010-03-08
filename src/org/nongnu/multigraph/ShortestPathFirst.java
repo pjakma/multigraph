@@ -21,8 +21,11 @@ import java.util.*;
 /**
  * Dijkstra's Shortest Path First algoritm, implemented to act on a 
  * Graph of N-nodes and Edges, with L-labels
+ * 
+ * @param N The type of the Nodes in the graph
+ * @param E The type of the Edges in the graph
  */
-public class ShortestPathFirst<N,L> {
+public class ShortestPathFirst<N,E> {
 
   /* internal convenience class to construct the SPF tree
    *
@@ -56,17 +59,17 @@ public class ShortestPathFirst<N,L> {
   }
   
   /* Map of user Nodes->SPFnodes, i.e. nodes with a path from the root */
-  private HashMap<N,SPFnode<N,L>> spfnodes;
+  private HashMap<N,SPFnode<N,E>> spfnodes;
   
-  private PriorityQueue<SPFnode<N,L>> q;
+  private PriorityQueue<SPFnode<N,E>> q;
   
   // convenience pointer back to the original graph
-  final private Graph<N,L> g;
+  final private Graph<N,E> g;
   private N root;
   
-  public ShortestPathFirst (Graph<N,L> g) {
-    spfnodes = new HashMap<N,SPFnode<N,L>> ();
-    q = new PriorityQueue<SPFnode<N,L>> ();
+  public ShortestPathFirst (Graph<N,E> g) {
+    spfnodes = new HashMap<N,SPFnode<N,E>> ();
+    q = new PriorityQueue<SPFnode<N,E>> ();
     this.g = g;
     
     if (g == null)
@@ -76,9 +79,9 @@ public class ShortestPathFirst<N,L> {
   /* Explore the node V, adding its child nodes to the queue and relaxing
    * the SPFedges as needed.
    */
-  private void explore (SPFnode<N,L> v) {
-    SPFnode<N,L> w;
-    Set<Edge<N,L>> edges;
+  private void explore (SPFnode<N,E> v) {
+    SPFnode<N,E> w;
+    Set<Edge<N,E>> edges;
     
     debug.printf ("SPF: exploring %s\n", v);
     
@@ -86,14 +89,14 @@ public class ShortestPathFirst<N,L> {
       return;
     
     /* For every child, W, of V */
-    for (Edge<N,L> e : edges) {
+    for (Edge<N,E> e : edges) {
       /* Relax the edge from V->W */
       
       debug.printf ("SPF: relaxing %s\n", e);
       
       if ((w = spfnodes.get (e.to ())) == null) {
         /* W is newly discovered, init and queue */
-        w = new SPFnode<N,L> (e.to (), e, e.weight() + v.cost);
+        w = new SPFnode<N,E> (e.to (), e, e.weight() + v.cost);
         spfnodes.put (w.n, w);
         q.add (w);
       } else if (e.weight() + v.cost < w.cost) { 
@@ -111,7 +114,7 @@ public class ShortestPathFirst<N,L> {
     
     if (debug.applies()) {
       debug.println ("SPFnodes:");
-      for (SPFnode<N,L> s2 : spfnodes.values ())
+      for (SPFnode<N,E> s2 : spfnodes.values ())
         debug.println ("\t" + s2);
     }
   }
@@ -122,7 +125,7 @@ public class ShortestPathFirst<N,L> {
    * @param root Root node for the Shortest-Path First tree.
    */
   public void run (N root) {
-    SPFnode<N,L> v;
+    SPFnode<N,E> v;
     
     if (root == null)
       throw new IllegalArgumentException ("root argument must not be null");
@@ -134,7 +137,7 @@ public class ShortestPathFirst<N,L> {
     
     /* initialise the root vertex, and seed the queue with its children */
     debug.println ("SPF: initialising");
-    spfnodes.put (root, (v = new SPFnode<N,L> (root, null, 0)));
+    spfnodes.put (root, (v = new SPFnode<N,E> (root, null, 0)));
     explore (v);
     
     /* go through the tree */
@@ -157,17 +160,17 @@ public class ShortestPathFirst<N,L> {
    * @param to The node to query a path for
    * @return List of Edges forming a path to the given node
    */
-  public List<Edge<N,L>> path (N to) {
-    SPFnode<N,L> s;
-    LinkedList<Edge<N,L>> l = null;
-    Edge<N,L> e;
+  public List<Edge<N,E>> path (N to) {
+    SPFnode<N,E> s;
+    LinkedList<Edge<N,E>> l = null;
+    Edge<N,E> e;
     
     /* The SPF tree points from child to parent. Walk from 'to' till we get
      * to the root (which has no parents), building the path-List.
      */
     while ((s = spfnodes.get (to)) != null && s.parents.size() > 0) {
       if (l == null)
-        l = new LinkedList<Edge<N,L>> ();
+        l = new LinkedList<Edge<N,E>> ();
       
       debug.println ("in path");
       /* Follow the first path, if there's more than one */
@@ -185,7 +188,7 @@ public class ShortestPathFirst<N,L> {
    * @return The best next-hop from the root
    */
   public N nexthop (N to) {
-    SPFnode<N,L> s;
+    SPFnode<N,E> s;
     N prev = null;
     
     /* The SPF tree points from child to parent. Walk from 'to' till we get

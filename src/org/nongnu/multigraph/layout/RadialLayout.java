@@ -26,14 +26,14 @@ import org.nongnu.multigraph.debug;
  * Layout the graph's nodes radially, in a nice circle. It tries to scale the
  * node size according to the graph.
  *
- * @param <N>
- * @param <L>
+ * @param <N> The type of the Nodes in the graph
+ * @param <E> The type of the Edges in the graph
  */
-public class RadialLayout<N extends PositionableNode, L> 
-                          extends Layout<N, L> {
+public class RadialLayout<N extends PositionableNode, E> 
+                          extends Layout<N, E> {
 
   
-  public RadialLayout (Graph<N, L> graph, Dimension bound, int maxiterations) {
+  public RadialLayout (Graph<N, E> graph, Dimension bound, int maxiterations) {
     super (graph, bound, maxiterations);
   }
 

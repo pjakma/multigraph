@@ -41,12 +41,12 @@ import java.util.*;
  * to multiple nodes, however hyper-graphs can be supported by using a node to act
  * as hyper-edge.
  * 
- * @param N The type of Nodes that will be added to this graph.
- * @param L The type of Label's that will be applied to edges of this graph.
+ * @param N The type of the Nodes in the graph
+ * @param E The type of the Edges in the graph
  * 
  * @author Paul Jakma
  */
-public interface Graph<N,L> extends Set<N> {
+public interface Graph<N,E> extends Set<N> {
 
   /**
    * Set an edge from one node to another with the given label. 
@@ -60,13 +60,13 @@ public interface Graph<N,L> extends Set<N> {
    * @param to Node to which the edges goes.
    * @param label The user's label for this edge. 
    */
-  void set (N from, N to, L label);
+  void set (N from, N to, E label);
   /**
    * Set an edge from one node to another with the given label and weight.
    * @param weight a user-specified metric or weight for the edge
    * @see #set(Object, Object, Object)
    */
-  void set (N from, N to, L label, int weight);
+  void set (N from, N to, E label, int weight);
   
   /**
    * Add the given node to the graph, sans edges
@@ -77,7 +77,7 @@ public interface Graph<N,L> extends Set<N> {
    * Remove 1 specific edge, given by the label, from between two nodes. 
    * @return Whether an edge was removed
    */
-  boolean remove (N from, N to, L label);
+  boolean remove (N from, N to, E label);
   /**
    * Remove all edges that go from one node to another 
    * @return Whether an edge was removed
@@ -140,7 +140,7 @@ public interface Graph<N,L> extends Set<N> {
    *          if the node does not exist, and an empty set if the node
    *          exists but has no edges.
    */
-  Set<Edge<N,L>> edges (N from);
+  Set<Edge<N,E>> edges (N from);
   
   /**
    * Find the edges going <em>from</em> one node <em>to</em> another node.
@@ -151,7 +151,7 @@ public interface Graph<N,L> extends Set<N> {
    *         or {@code null} otherwise.
    * @see #edges(Object)
    */
-  Collection<Edge<N,L>> edges (N from, N to);
+  Collection<Edge<N,E>> edges (N from, N to);
   /**
    * Find the first edge from a node to another node.
    * @param from Which node we want to query edges from.
@@ -159,7 +159,7 @@ public interface Graph<N,L> extends Set<N> {
    * @return An edge going from <em>from</em>-&gt;<em>to</em> if any exist,
    *         or {@code null} otherwise.
    */
-  Edge<N,L> edge (N from, N to);
+  Edge<N,E> edge (N from, N to);
 
   /**
    * Find the edge with the given label, from the one node to another
@@ -171,7 +171,7 @@ public interface Graph<N,L> extends Set<N> {
    *         by the given label, if it exists,
    *         or {@code null} otherwise.
    */
-  Edge<N,L> edge (N from, N to, L label);
+  Edge<N,E> edge (N from, N to, E label);
   
   /* Why is there no Observable interface ? */
   /**

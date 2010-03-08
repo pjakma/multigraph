@@ -25,11 +25,13 @@ import org.nongnu.multigraph.Graph;
 /**
  * Random layout of a graph. This layout can be interesting to apply prior to a
  * ForceLayout.
+ * @param <N> The type of the Nodes in the graph
+ * @param <E> The type of the Edges in the graph
  */
-public class RandomLayout<N extends PositionableNode, L> 
-            extends Layout<N, L> {
+public class RandomLayout<N extends PositionableNode, E> 
+            extends Layout<N, E> {
   
-  public RandomLayout (Graph<N,L> graph, Dimension bound, int maxiterations) {
+  public RandomLayout (Graph<N,E> graph, Dimension bound, int maxiterations) {
     super (graph, bound, maxiterations);
   }
   

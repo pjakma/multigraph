@@ -25,14 +25,17 @@ import org.nongnu.multigraph.Graph;
  * 
  * All edges may be initially cleared from the graph.
  * 
+ * @param <N> The type of the Nodes in the graph
+ * @param <E> The type of the Edges in the graph
+ * 
  * @author paul
  *
  */
-public abstract class AbstractRewire<N,L> {
-  protected Graph<N,L> graph;
-  protected EdgeLabeler<N,L> el;
+public abstract class AbstractRewire<N,E> {
+  protected Graph<N,E> graph;
+  protected EdgeLabeler<N,E> el;
   
-  public AbstractRewire (Graph<N,L> graph, EdgeLabeler<N,L> el) {
+  public AbstractRewire (Graph<N,E> graph, EdgeLabeler<N,E> el) {
     this.graph = graph;
     this.el = el;
   }

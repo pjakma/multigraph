@@ -19,18 +19,18 @@
 package org.nongnu.multigraph;
 
 /**
- * A multiple, undirected edge graph implementation.
+ * A multi-edge, undirected edge graph implementation.
  * 
  * @author paul
- *
- * @param <N> 
- * @param <L>
+
+ * @param N The type of the Nodes in the graph
+ * @param E The type of the Edges in the graph
  * @see MultiDiGraph
  */
-public class MultiGraph<N,L> extends MultiDiGraph<N, L> {
+public class MultiGraph<N,E> extends MultiDiGraph<N, E> {
 
   @Override
-  protected boolean _remove (N from, N to, L label) {
+  protected boolean _remove (N from, N to, E label) {
     if (!super._remove (from, to, label))
       return false;
     
@@ -41,7 +41,7 @@ public class MultiGraph<N,L> extends MultiDiGraph<N, L> {
   }
 
   @Override
-  protected void _set (N from, N to, int weight, L label) {
+  protected void _set (N from, N to, int weight, E label) {
     super._set (from, to, weight, label);
     super._set (to, from, weight, label);
   }
@@ -49,7 +49,7 @@ public class MultiGraph<N,L> extends MultiDiGraph<N, L> {
   @SuppressWarnings ("unchecked")
   @Override
   public boolean remove (Object o) {
-    for (Edge<N, L> edge : this.edges ((N) o))
+    for (Edge<N, E> edge : this.edges ((N) o))
       if (!super._remove (edge.to (), edge.from (), edge.label ()))
         throw new AssertionError ("Unable to remove other half of edge!");
     return super.remove (o);

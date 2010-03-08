@@ -23,8 +23,11 @@ import java.util.*;
  * Implementation specific class for the MultiGraph.
  * <p>
  * Maintains state for a Node, including edges out to other nodes
+ * 
+ * @param N The type of the Nodes in the graph
+ * @param E The type of the Edges in the graph
  */
-public class Node<N,L> {
+public class Node<N,E> {
   /* Hash of destination Nodes to a hash of edge Object to labels
    * i.e.:
    * 
@@ -38,11 +41,11 @@ public class Node<N,L> {
    * destination node:label is 1:1..m
    * label:edge should be 1:1
    */ 
-  private Map<Node<N,L>,Map<L,Edge<N,L>>> edgelist 
+  private Map<Node<N,E>,Map<E,Edge<N,E>>> edgelist 
     = Collections.synchronizedMap
-      (new HashMap<Node<N,L>,Map<L,Edge<N,L>>> ());
+      (new HashMap<Node<N,E>,Map<E,Edge<N,E>>> ());
   /* Cache a set of all edges, so that edges() can be performant */
-  private Set<Edge<N,L>> all_edges = new HashSet<Edge<N,L>> ();
+  private Set<Edge<N,E>> all_edges = new HashSet<Edge<N,E>> ();
   
   // convenience pointer to the user node object
   final N unode;
@@ -56,9 +59,9 @@ public class Node<N,L> {
    * adds the edge if none exist for this Node -> <to,label> 
    * sets the weight if <to,label> edge already exists.
    */
-  void set (Node<N,L> to, int weight, L label) {
-    Map<L,Edge<N,L>> to_edges = edgelist.get (to);
-    Edge<N,L> e;
+  void set (Node<N,E> to, int weight, E label) {
+    Map<E,Edge<N,E>> to_edges = edgelist.get (to);
+    Edge<N,E> e;
     
     assert (to != null);
     assert (label != null);
@@ -69,18 +72,18 @@ public class Node<N,L> {
     }
     
     if (to_edges == null) {
-      to_edges = new HashMap<L,Edge<N,L>> ();
+      to_edges = new HashMap<E,Edge<N,E>> ();
       edgelist.put (to, to_edges);
     }
     
-    all_edges.add ((e = new Edge<N,L> (this.unode, to.unode, weight, label)));
+    all_edges.add ((e = new Edge<N,E> (this.unode, to.unode, weight, label)));
     to_edges.put (label, e);
   }
 
-  private boolean _remove (Node<N,L> to, L label, boolean clear,
-                           Iterator<Node<N,L>> edgelist_it) {
-    Map<L,Edge<N,L>> to_edges = edgelist.get (to);
-    Edge<N,L> e;
+  private boolean _remove (Node<N,E> to, E label, boolean clear,
+                           Iterator<Node<N,E>> edgelist_it) {
+    Map<E,Edge<N,E>> to_edges = edgelist.get (to);
+    Edge<N,E> e;
     
     assert (to != null);
     
@@ -121,18 +124,18 @@ public class Node<N,L> {
   }
   
   // Removes the edge from this Node to 'to' keyed by <to,label>
-  boolean remove (Node<N,L> to, L label) {
+  boolean remove (Node<N,E> to, E label) {
     assert to != null;
     assert label != null;
     return _remove (to, label, false, null);
   }
   
   // Removes all edges from this Node to 'to'
-  boolean remove (Node<N,L> to) {
+  boolean remove (Node<N,E> to) {
     assert to != null;
     boolean ret = true;
     
-    for (Edge<N,L> e : edges (to))
+    for (Edge<N,E> e : edges (to))
       if (! _remove (to, e.label (), false, null))
         ret = false;
     
@@ -144,7 +147,7 @@ public class Node<N,L> {
    */
   boolean clear () {
     boolean ret = true;
-    for (Iterator<Node<N,L>> it = edgelist.keySet ().iterator ();
+    for (Iterator<Node<N,E>> it = edgelist.keySet ().iterator ();
          it.hasNext ();)
       if (! _remove (it.next (), null, true, it))
         ret = false;
@@ -161,18 +164,18 @@ public class Node<N,L> {
   int edge_outdegree () {
     return all_edges.size();
   }
-  Collection<Map<L,Edge<N,L>>> edgelist () {
+  Collection<Map<E,Edge<N,E>>> edgelist () {
     return edgelist.values();
   }
   
   /* Return all edges out of this node */
-  Set<Edge<N,L>> edges () {
+  Set<Edge<N,E>> edges () {
     return all_edges;
   }
 
   /* Return edges out of this node, to given node. */
-  Collection<Edge<N,L>> edges (Node<N,L> to) {
-    Map<L,Edge<N,L>> edges;
+  Collection<Edge<N,E>> edges (Node<N,E> to) {
+    Map<E,Edge<N,E>> edges;
     
     if (to == null)
       throw new NullPointerException ("Node get requires non-null argument");
@@ -183,7 +186,7 @@ public class Node<N,L> {
     return edges.values ();
   }
   
-  boolean isLinked (Node<N,L> to) {
+  boolean isLinked (Node<N,E> to) {
     if (to == null)
       throw new NullPointerException ("Node get requires non-null argument");
     

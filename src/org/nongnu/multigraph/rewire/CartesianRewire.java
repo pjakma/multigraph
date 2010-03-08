@@ -2,15 +2,12 @@ package org.nongnu.multigraph.rewire;
 
 import java.awt.Dimension;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
 import org.nongnu.multigraph.Graph;
 import org.nongnu.multigraph.debug;
 import org.nongnu.multigraph.layout.PositionableNode;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 /**
  * Wire up nodes in the graph with each other according to their cartesian
@@ -22,12 +19,11 @@ import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
  * do so themselves in their EdgeLabeler.
  * <p>
  * @author Paul Jakma
- *
- * @param <N>
- * @param <L>
+ * @param <N> The type of the Nodes in the graph
+ * @param <E> The type of the Edges in the graph
  */
-public class CartesianRewire<N extends PositionableNode, L>
-       extends AbstractRewire<N, L> {
+public class CartesianRewire<N extends PositionableNode, E>
+       extends AbstractRewire<N, E> {
   private float range;
   private LinkedList<N> [][] gridindex = null;
   /* number of divisions to make for the grid, on the shortest side of the
@@ -55,7 +51,7 @@ public class CartesianRewire<N extends PositionableNode, L>
    * @param range The maximum range for links between nodes. 
    */
   @SuppressWarnings ("unchecked")
-  public CartesianRewire (Graph<N, L> graph, EdgeLabeler<N, L> el,
+  public CartesianRewire (Graph<N, E> graph, EdgeLabeler<N, E> el,
                           Dimension bound, float range) {
     super (graph, el);
     this.range = range;
@@ -83,7 +79,7 @@ public class CartesianRewire<N extends PositionableNode, L>
    * @param range The maximum range for links between nodes. 
    */
   @SuppressWarnings ("unchecked")
-  public CartesianRewire (Graph<N, L> graph, EdgeLabeler<N, L> el,
+  public CartesianRewire (Graph<N, E> graph, EdgeLabeler<N, E> el,
                           float range) {
     super (graph, el);
     this.range = range;
@@ -162,7 +158,7 @@ public class CartesianRewire<N extends PositionableNode, L>
     N n1;
     while ((n1 = check.poll ()) != null)
       for (N n2 : targets) {
-        L label;
+        E label;
         
         /* this lets it work efficiently when targets contains some of the
          * same nodes as check,
