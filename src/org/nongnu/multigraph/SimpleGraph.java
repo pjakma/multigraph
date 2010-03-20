@@ -19,7 +19,8 @@
 package org.nongnu.multigraph;
 
 /**
- * Simple, undirected graph: No loops allowed and 0 or 1 edges between nodes.
+ * Simple, undirected graph: No self-loop edges allowed and 0 or 1 edges
+ * between nodes.
  * 
  * @see SimpleDiGraph
  * @param N The type of the Nodes in the graph

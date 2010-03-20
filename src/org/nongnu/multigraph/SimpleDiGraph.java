@@ -20,7 +20,7 @@ package org.nongnu.multigraph;
 import java.util.Collection;
 
 /**
- * Simple, directed edge graph: no loops allowed and no more than 1 
+ * Simple, directed edge graph: no self-loop edges allowed and no more than 1 
  * edge between nodes.
  * @param N The type of the Nodes in the graph
  * @param E The type of the Edges in the graph
