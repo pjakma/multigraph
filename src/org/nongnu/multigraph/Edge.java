@@ -18,7 +18,7 @@
 package org.nongnu.multigraph;
 
 /**
- * An edge, identified immutably by &lt;from,to,label&gt;, of some mutable weight.
+ * An edge, identified immutably by {@literal <from,to,label>}, of some mutable weight.
  *
  * @author Paul Jakma
  *

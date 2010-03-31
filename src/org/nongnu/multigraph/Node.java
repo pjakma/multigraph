@@ -27,7 +27,7 @@ import java.util.*;
  * @param N The type of the Nodes in the graph
  * @param E The type of the Edges in the graph
  */
-public class Node<N,E> {
+class Node<N,E> {
   /* Hash of destination Nodes to a hash of edge Object to labels
    * i.e.:
    * 

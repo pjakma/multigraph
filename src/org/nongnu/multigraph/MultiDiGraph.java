@@ -68,7 +68,19 @@ public class MultiDiGraph<N,E>
     nf.set (nt, weight == 0 ? weight : 1, label);
   }
   
-  /* Exported to package so that simpler graphs can be subclassed from this */
+  /**
+   * The core, central set method. All other set methods are
+   * filters for this method, meant to check invariants, apply various 
+   * requirements. etc.
+   * 
+   * Exported to package so that other types of graph may be subclassed from this
+   * 
+   * @param from The N-typed node from which to set the new edge
+   * @param to The N-typed node to which the edge should be set
+   * @param weight The weight of the node, unweighted edges should just be
+   *               set to 1.
+   * @param label The E-typed edge label object for the graph edge.
+   */
   protected void _set (N from, N to, int weight, E label) {
     Node<N,E> nf, nt = null;
     
@@ -89,12 +101,29 @@ public class MultiDiGraph<N,E>
   }
   
   // Set an edge between the two nodes (the nodes are added as required)
+  /**
+   * 
+   */
   public synchronized void set (N from, N to, E label)
     { _set (from, to, 1, label); }
   // Same, but for a weighted edge
   public synchronized void set (N from, N to, E label, int weight)
     { _set (from, to, weight, label); }
   
+  /**
+   * The core, central edge removal method. All other remove methods are
+   * filters for this method, meant to check invariants, apply various 
+   * requirements. etc.
+   * 
+   * Exported to package so that other types of graph may be subclassed 
+   * from this
+   * 
+   * @param from The N-typed node from which the edge is to be removed
+   * @param to The N-typed node to which the edge is to be removed
+   * @param label The E-typed edge label object for the edge which is to be
+   *              removed. If specified, only edges matching the label
+   *              will be removed. If not specified, all edges will be removed.
+   */
   protected boolean _remove (N from, N to, E label) {
     Node<N,E> nf, nt = null;
     

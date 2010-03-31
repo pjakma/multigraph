@@ -53,7 +53,7 @@ public interface Graph<N,E> extends Set<N> {
    *
    * Weight defaults to 1. Nodes are automatically added to graph, as needs be.
    *
-   * If a given edge for @{literal from,to,label>} already exists, then the
+   * If a given edge for {@literal <from,to,label>} }already exists, then the
    * weight is updated.
    * 
    * @param from Node from which the edge originates.
@@ -87,7 +87,6 @@ public interface Graph<N,E> extends Set<N> {
   boolean  remove (N from, N to);
   /**
    * Remove the given node and all its edges.
-   * XXX: Not properly implemented yet.
    * @see #remove(Object, Object)
    * @see #remove(Object)
    * @see #set(Object, Object, Object)
@@ -173,23 +172,42 @@ public interface Graph<N,E> extends Set<N> {
    */
   Edge<N,E> edge (N from, N to, E label);
   
-  /* Why is there no Observable interface ? */
+  /* Shame there's no Observable interface ? */
   /**
    * @see java.util.Observable
    */
   void addObserver(Observer o);
+  /**
+   * @see java.util.Observable
+   */
   int  countObservers();
+  /**
+   * @see java.util.Observable
+   */
   void  deleteObserver(Observer o);
+  /**
+   * @see java.util.Observable
+   */
   void deleteObservers();
+  /**
+   * @see java.util.Observable
+   */
   boolean hasChanged();
+  /**
+   * @see java.util.Observable
+   */
   void notifyObservers();
+  /**
+   * @see java.util.Observable
+   */
   void notifyObservers(Object arg);
   /**
    * "Plug" delivery of Observable events to observers, so that any such events
    * are instead queued up internally, and potentially coalesced, rather than
    * delivered to Observers.
    * 
-   * This potentially allows bulk updates to be made to the graph more efficiently.
+   * This potentially allows bulk updates to be made to the graph more
+   * efficiently.
    */
   void plugObservable ();
   /**

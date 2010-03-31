@@ -37,7 +37,9 @@ public class SimpleGraph<N,E> extends SimpleDiGraph<N, E> {
     
     return true;
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void _set (N from, N to, int weight, E label) {
     super._set (from, to, weight, label);
