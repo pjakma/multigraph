@@ -17,7 +17,6 @@
  */        
 package org.nongnu.multigraph.rewire;
 
-import org.nongnu.multigraph.Edge;
 import org.nongnu.multigraph.Graph;
 
 /**

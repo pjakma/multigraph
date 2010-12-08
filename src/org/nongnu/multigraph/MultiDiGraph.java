@@ -162,7 +162,6 @@ public class MultiDiGraph<N,E>
   
   public synchronized Set<Edge<N,E>> edges (N from) {
     Node<N,E> n;
-    Set<Edge<N,E>> edges;
     
     n = nodes.get (from);
 
@@ -174,7 +173,6 @@ public class MultiDiGraph<N,E>
   
   public synchronized Collection<Edge<N,E>> edges (N from, N to) {
     Node<N,E> nf, nt;
-    Collection<Edge<N,E>> edges;
     
     if ((nf = nodes.get (from)) == null)
       return null;
@@ -212,7 +210,6 @@ public class MultiDiGraph<N,E>
   public synchronized Set<N> successors (N node) {
     Set<N> sc = new HashSet<N> ();
     Node<N,E> n;
-    Set<Edge<N,E>> edges;
 
     assert node != null;
     

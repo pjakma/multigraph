@@ -1,7 +1,5 @@
 package org.nongnu.multigraph.metrics;
 
-import java.util.ArrayList;
-
 import org.nongnu.multigraph.Graph;
 
 /**
