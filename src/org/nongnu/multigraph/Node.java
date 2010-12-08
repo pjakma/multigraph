@@ -106,7 +106,7 @@ class Node<N,E> {
         edgelist_it.remove ();
       }
       
-      return true;
+      return ret;
     }
     
     // label not given or not found - clear all the edges, or finished?
@@ -179,9 +179,8 @@ class Node<N,E> {
     
     if (to == null)
       throw new NullPointerException ("Node get requires non-null argument");
-    
     if ((edges = edgelist.get (to)) == null)
-      return Collections.EMPTY_SET;
+      return Collections.emptySet ();
     
     return edges.values ();
   }
