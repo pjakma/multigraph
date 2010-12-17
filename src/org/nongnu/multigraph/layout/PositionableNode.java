@@ -25,6 +25,7 @@ package org.nongnu.multigraph.layout;
  */
 public interface PositionableNode {
   Vector2D getPosition ();
+  void setPosition (Vector2D pos);
   Vector2D getVelocity ();
   
   float getSize ();

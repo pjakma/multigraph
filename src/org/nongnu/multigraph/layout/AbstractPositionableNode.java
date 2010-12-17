@@ -18,6 +18,11 @@ public abstract class AbstractPositionableNode
   }
   
   @Override
+  public void setPosition (Vector2D p) {
+    this.position = p;
+  }
+  
+  @Override
   public Vector2D getVelocity () {
     return velocity;
   }
