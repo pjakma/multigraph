@@ -263,6 +263,17 @@ public class MultiDiGraph<N,E>
     return sb.toString ();
   }
   
+  public Iterable<N> random_node_iterable () {
+    return new Iterable<N> () {
+      @Override
+      public Iterator<N> iterator () {
+        ArrayList<N> al = new ArrayList<N> (MultiDiGraph.this);
+        Collections.shuffle (al);
+        return al.iterator ();
+      }
+    };
+  }
+  
   /* Collection/Set interfaces
    *
    * Ideally, we'd have just extended an existing Set class, however that
