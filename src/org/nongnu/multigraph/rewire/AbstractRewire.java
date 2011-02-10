@@ -39,9 +39,5 @@ public abstract class AbstractRewire<N,E> {
     this.el = el;
   }
   
-  static protected <N,L> void clear (Graph<N, L> graph) {
-    graph.clear_all_edges ();
-  }
-  
   public abstract void rewire ();
 }

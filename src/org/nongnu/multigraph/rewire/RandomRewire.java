@@ -93,7 +93,7 @@ public class RandomRewire<N,E> extends AbstractRewire<N,E> {
     graph.plugObservable ();
     nodes = (N[]) graph.toArray (new Object[0]);
 
-    RandomRewire.clear (graph);
+    graph.clear_all_edges ();
 
     for (N node : nodes) {
       /* work around fact you can't have generic typed arrays */

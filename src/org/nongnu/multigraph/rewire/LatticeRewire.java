@@ -50,7 +50,7 @@ public class LatticeRewire<N, E> extends AbstractRewire<N, E> {
     int i = 0;
     
     graph.plugObservable ();
-    RandomRewire.clear (graph);
+    graph.clear_all_edges ();
     
     for (N n : graph) {
       E label;
