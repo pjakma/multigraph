@@ -46,6 +46,15 @@ public abstract class Layout<N extends PositionableNode, E> {
   Dimension bound;
   int border; /* border to leave, in points */
   
+  public int maxiterations () {
+    return maxiterations;
+  }
+
+  public Layout<N, E> maxiterations (int maxiterations) {
+    this.maxiterations = maxiterations;
+    return this;
+  }
+
   public Layout (Graph<N, E> graph, Dimension bound) {
     this.graph = graph;
     this.maxiterations = 0;
