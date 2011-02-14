@@ -39,5 +39,23 @@ public abstract class AbstractRewire<N,E> {
     this.el = el;
   }
   
+  /**
+   * Rewire the whole graph. All edges potentially are first cleared.
+   * Then some edges added back, according to the specified algorithm.
+   */
   public abstract void rewire ();
+  
+  /**
+   * Add a single node to the graph.
+   * <p>
+   * This may have different resource usage relative to rewire(). E.g. it
+   * may use less memory than rewire(), but more CPU over all if called 
+   * for a significant number of nodes. 
+   * <p>
+   * This method is optional, and not all implementations support it.
+   *
+   * @throws UnsupportedOperationException If this method is not supported.
+   * @param node
+   */
+  public void add (N node) { throw new UnsupportedOperationException ();};
 }

@@ -240,8 +240,7 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
             continue;
           
           if (consider_link (to_add, vi, links)) {
-            graph.set (to_add, vi, el.getLabel (to_add, vi));
-            link_added (to_add, vi);
+            add_link (to_add, vi);
             added++;
           }
         }
@@ -256,5 +255,31 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
       split++;
     }
     graph.unplugObservable ();
+  }
+  
+  private void add_link (N to_add, N to) {
+    graph.set (to_add, to, el.getLabel (to_add, to));
+    link_added (to_add, to);
+  }
+  
+  @Override
+  public void add (N to_add) {
+    int numlinks = (int)(graph.avg_nodal_degree () * graph.size ());
+    int added = 0;
+    int pass = 0;
+    
+    do {
+      for (N node : graph) {
+        if (m_mode_stop (added, pass))
+          break;
+        if (graph.nodal_outdegree (node) > 0 
+            && graph.edges (to_add, node).size () == 0)
+          if (consider_link (to_add, node, numlinks)) {
+            add_link (to_add, node);
+            numlinks++;
+          }
+      }
+      pass++;
+    } while (!m_mode_stop (added, ++pass));
   }
 }
