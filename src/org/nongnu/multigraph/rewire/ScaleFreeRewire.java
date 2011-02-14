@@ -52,9 +52,15 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
    * @return reference to this class.
    */
   public ScaleFreeRewire<N,E> m (int m) {
+    if (m >= graph.size ())
+      throw new java.lang.IllegalArgumentException ("m must be less than the graph size");
+    
     if (m <= 0)
       throw new java.lang.IllegalArgumentException ("m must be >= 1");
+    
     this.m = m;
+    
+    System.out.printf ("m set to %d\n", m);
     return this;
   }
 
