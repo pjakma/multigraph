@@ -39,25 +39,28 @@ public class debug {
     WARNING(Level.WARNING),
     INFO(Level.INFO),
     DEBUG(Level.FINEST);
+    
     private final Level level;
+    
     private levels (Level l) { level = l; }
+    
     Level toLevel () { return level; }
+    
     static levels tolevel (Level l) {
       for (levels ls : levels.values ())
-        if (ls.ordinal () == l.intValue ())
+        if (ls.level == l)
           return ls;
       return levels.NONE;
     }
   }
   
   public static PrintStream out = System.out;
-  private static levels level = levels.NONE;
+  private static levels level = levels.WARNING;
   private static java.util.logging.Formatter fmter = new java.util.logging.Formatter () {
     @Override
     public String format (LogRecord record) {
       return record.getLevel () + ": " + record.getMessage ();
     }
-    
   };
   
   private static ConsoleHandler ch = new ConsoleHandler ();
@@ -119,7 +122,7 @@ public class debug {
    * @param l String form of the {@link #level} to set the push-level to.
    */
   public static void pushlevel (String l) {
-    mh.setPushLevel (levels.valueOf (l.toUpperCase ()).level);
+    pushlevel (levels.valueOf (l.toUpperCase ()));
   }
   
   /**
