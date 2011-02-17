@@ -9,7 +9,7 @@ import org.nongnu.multigraph.Graph;
  */
 public class TraversalMetrics {
   /**
-   * Traverse the Graph and create a histrogram of the distribution
+   * Traverse the Graph and create a histogram of the distribution
    * of nodal out-degree.
    * @param <N> The type of the nodes in the graph.
    * @param <E> The type of the edges in the graph.
