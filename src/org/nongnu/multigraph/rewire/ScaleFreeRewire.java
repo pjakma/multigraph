@@ -154,6 +154,13 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   }
   
   protected static boolean m_mode_stop (m_modes m_mode, int m, int added, int pass) {
+    /* In no case should we allow the process to spin forever trying
+     * to add a link but being inable to. As an arbitrary limit, we
+     * hard-bound all processes to m*2 passes
+     */
+    if (pass > m*2)
+      return true;
+    
     switch (m_mode) {
       case STRICT: return added >= m;
       case MIN: return pass > 0 && added >= m;
