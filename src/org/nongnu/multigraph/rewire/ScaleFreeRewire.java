@@ -34,11 +34,11 @@ import org.nongnu.multigraph.debug;
  * @param <N> The label type of nodes in the graph.
  * @param <E> The label type of edges in the graph.
  */
-public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
-  private Random r = new Random ();
-  private N [] nodes;
-  private int m = 1;
-  private int a = 0;
+public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
+  protected Random r = new Random ();
+  protected N [] nodes;
+  protected int m = 1;
+  protected int a = 0;
   
   public int m () {
     return m;
@@ -59,8 +59,6 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
       throw new java.lang.IllegalArgumentException ("m must be >= 1");
     
     this.m = m;
-    
-    System.out.printf ("m set to %d\n", m);
     return this;
   }
 
@@ -155,8 +153,8 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
     _init_nodes ();
   }
   
-  private boolean m_mode_stop (int added, int pass) {
-    switch (this.m_mode) {
+  protected static boolean m_mode_stop (m_modes m_mode, int m, int added, int pass) {
+    switch (m_mode) {
       case STRICT: return added >= m;
       case MIN: return pass > 0 && added >= m;
       case MAX: return (pass > 0 && added >= 1) || added >= m;
@@ -192,6 +190,7 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
     
     return fr <= pi;
   }
+  
   /**
    * Called when a link is created between 2 nodes. To facilitate the
    * maintenance of any state. For the standard BA-model, there is
@@ -204,6 +203,17 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
     return;
   }
   
+  protected void m0 () {
+    /* The first m nodes are a special case, because they are not attached
+     * and so ki = 0, and so Π(ki) = 0. I.e. the m0 graph from the paper.
+     */
+    for (int i = 1; i < m + 1; i++) {
+      graph.set (nodes[i - 1], nodes[i],
+                 el.getLabel (nodes[i - 1], nodes[i]));
+      link_added (nodes[i - 1], nodes[i]);
+    }
+  }
+  
   @Override
   public void rewire () {
     /* this tracks the index at which our set of nodes is split between
@@ -214,14 +224,7 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
     
     graph.plugObservable ();
     
-    /* The first m nodes are a special case, because they are not attached
-     * and so ki = 0, and so Π(ki) = 0. I.e. the m0 graph from the paper.
-     */
-    for (int i = 1; i < m + 1; i++) {
-      graph.set (nodes[i - 1], nodes[i],
-                 el.getLabel (nodes[i - 1], nodes[i]));
-      link_added (nodes[i - 1], nodes[i]);
-    }
+    m0 ();
     
     /* every new node to be attached to the existing graph.. */
     while (split < nodes.length) {
@@ -233,7 +236,7 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
       
       do {
         /* ..should consider adding an edge to every existing node ... */
-        for (int i = 0; i < split && !m_mode_stop (added, pass); i++) {
+        for (int i = 0; i < split && !m_mode_stop (m_mode, m, added, pass); i++) {
           N vi = nodes[i];
           
           if (graph.edges (to_add, vi).size () > 0)
@@ -244,7 +247,7 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
             added++;
           }
         }
-      } while (!m_mode_stop (added, ++pass));
+      } while (!m_mode_stop (m_mode, m, added, ++pass));
       /* Now node was added successfully, update the split, go onto next
        * next node.
        * 
@@ -257,29 +260,45 @@ public class ScaleFreeRewire<N,E> extends AbstractRewire<N,E> {
     graph.unplugObservable ();
   }
   
-  private void add_link (N to_add, N to) {
+  protected boolean add_link (N to_add, N to) {
+    debug.printf ("ScaleFree#add_link: %s to %s\n", to_add, to);
+    
+    if (graph.edges (to_add, to).size () != 0)
+      return false;
+    
     graph.set (to_add, to, el.getLabel (to_add, to));
     link_added (to_add, to);
+    
+    return true;
+  }
+  
+  protected void add (N to_add, int numlinks) {
+    int added = 0;
+    int pass = 0;
+    
+    debug.printf ("ScaleFree#add: toadd %s\n", to_add);
+    
+    do {
+      for (N node : graph) {
+        if (m_mode_stop (m_mode, m, added, pass))
+          break;
+        if (to_add != node
+            && graph.nodal_outdegree (node) > 0
+            && consider_link (to_add, node, numlinks)
+            && add_link (to_add, node))
+              added++;
+      }
+      pass++;
+      numlinks += added;
+    } while (!m_mode_stop (m_mode, m, added, pass));
   }
   
   @Override
   public void add (N to_add) {
     int numlinks = (int)(graph.avg_nodal_degree () * graph.size ());
-    int added = 0;
-    int pass = 0;
     
-    do {
-      for (N node : graph) {
-        if (m_mode_stop (added, pass))
-          break;
-        if (graph.nodal_outdegree (node) > 0 
-            && graph.edges (to_add, node).size () == 0)
-          if (consider_link (to_add, node, numlinks)) {
-            add_link (to_add, node);
-            numlinks++;
-          }
-      }
-      pass++;
-    } while (!m_mode_stop (added, ++pass));
+    graph.plugObservable ();
+    add (to_add, numlinks);
+    graph.unplugObservable ();
   }
 }

@@ -30,7 +30,7 @@ import org.nongnu.multigraph.Graph;
  * @param <N> The type of the Nodes in the graph
  * @param <E> The type of the Edges in the graph
  */
-public class RandomRewire<N,E> extends AbstractRewire<N,E> {
+public class RandomRewire<N,E> extends Rewire<N,E> {
   Random r = new Random ();
   int mindegree = 1;
   

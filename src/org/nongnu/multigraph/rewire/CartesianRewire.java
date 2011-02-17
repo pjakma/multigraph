@@ -23,7 +23,7 @@ import org.nongnu.multigraph.layout.PositionableNode;
  * @param <E> The type of the Edges in the graph
  */
 public class CartesianRewire<N extends PositionableNode, E>
-       extends AbstractRewire<N, E> {
+       extends Rewire<N, E> {
   private float range;
   private LinkedList<N> [][] gridindex = null;
   /* number of divisions to make for the grid, on the shortest side of the

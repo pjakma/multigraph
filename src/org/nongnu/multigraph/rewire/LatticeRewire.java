@@ -28,7 +28,7 @@ import org.nongnu.multigraph.Graph;
  * @param <N> The type of the nodes of the graph.
  * @param <E> The type of the edge labels of the graph.
  */
-public class LatticeRewire<N, E> extends AbstractRewire<N, E> {
+public class LatticeRewire<N, E> extends Rewire<N, E> {
   int cols;
   
   public LatticeRewire (Graph<N, E> graph, EdgeLabeler<N, E> el,
