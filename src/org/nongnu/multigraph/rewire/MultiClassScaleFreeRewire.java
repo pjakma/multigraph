@@ -60,12 +60,19 @@ public class MultiClassScaleFreeRewire<N,E> extends ScaleFreeRewire<N,E> {
     int pass = 0;
     do {
       for (int i = 0; i < split && !m_mode_stop (p_mode, p, added, pass); i++)
-        for (int j = i + 1; j < split; j++)
-          if (consider_similar_link (nodes[i], nodes[j], split)) {
-            add_link (nodes[i], nodes[j]);
-            /* consider it added, even if link already existed */
+        for (int j = i + 1; j < split; j++) {
+          N n1 = nodes[r.nextInt (split)];
+          N n2 = nodes[r.nextInt (split)];
+          
+          if (n1 == n2) continue;
+          
+          if (consider_similar_link (n1, n2, split)) {
+            add_link (n1, n2);
+            /* consider it added, even if link already existed,
+             * for purposes of number of peering links to add */
             added++;
           }
+        }
     } while (!m_mode_stop (p_mode, p, added, ++pass));
   }
   

@@ -1,5 +1,6 @@
 package org.nongnu.multigraph.rewire;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.nongnu.multigraph.Graph;
@@ -244,15 +245,11 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
       do {
         /* ..should consider adding an edge to every existing node ... */
         for (int i = 0; i < split && !m_mode_stop (m_mode, m, added, pass); i++) {
-          N vi = nodes[i];
+          N vi = nodes[r.nextInt (split)];
           
-          if (graph.edges (to_add, vi).size () > 0)
-            continue;
-          
-          if (consider_link (to_add, vi, links)) {
-            add_link (to_add, vi);
+          if (consider_link (to_add, vi, links)
+              && add_link (to_add, vi))
             added++;
-          }
         }
       } while (!m_mode_stop (m_mode, m, added, ++pass));
       /* Now node was added successfully, update the split, go onto next
@@ -270,7 +267,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   protected boolean add_link (N to_add, N to) {
     debug.printf ("ScaleFree#add_link: %s to %s\n", to_add, to);
     
-    if (graph.edges (to_add, to).size () != 0)
+    if (graph.is_linked (to_add, to))
       return false;
     
     graph.set (to_add, to, el.getLabel (to_add, to));
@@ -286,7 +283,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
     debug.printf ("ScaleFree#add: toadd %s\n", to_add);
     
     do {
-      for (N node : graph) {
+      for (N node : graph.random_node_iterable ()) {
         if (m_mode_stop (m_mode, m, added, pass))
           break;
         if (to_add != node

@@ -53,8 +53,8 @@ public abstract class Rewire<N,E> {
   /**
    * Add a single node to the graph.
    * <p>
-   * This may have different resource usage relative to rewire(). E.g. it
-   * may use less memory than rewire(), but more CPU over all if called 
+   * This may (or may not) have different resource usage relative to rewire().
+   * E.g. it may use less memory than rewire(), but more CPU over all if called 
    * for a significant number of nodes. 
    * <p>
    * This method is optional, and not all implementations support it.
