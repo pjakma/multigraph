@@ -58,9 +58,10 @@ public class MultiClassScaleFreeRewire<N,E> extends ScaleFreeRewire<N,E> {
     /* links may be added between like nodes */
     int added = 0;
     int pass = 0;
+    
     do {
       for (int i = 0; i < split && !m_mode_stop (p_mode, p, added, pass); i++)
-        for (int j = i + 1; j < split; j++) {
+        for (int j = i + 1; j < split && !m_mode_stop (p_mode, p, added, pass); j++) {
           N n1 = nodes[r.nextInt (split)];
           N n2 = nodes[r.nextInt (split)];
           
