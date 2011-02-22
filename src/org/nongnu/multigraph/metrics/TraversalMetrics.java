@@ -76,7 +76,7 @@ public class TraversalMetrics {
   public static <N,E> int edges (final Graph<N,E> graph) {
     int count = 0;
     for (N node : graph)
-      count+= graph.edge_outdegree (node);
+      count += graph.edge_outdegree (node);
     return count / (graph.is_directed () ? 1 : 2);
   }
 }
