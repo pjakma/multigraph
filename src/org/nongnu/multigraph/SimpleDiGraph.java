@@ -64,4 +64,9 @@ public class SimpleDiGraph<N, E> extends MultiDiGraph<N, E> {
     super._set (nt, nf, weight, label);
     super._set (nf, nt, weight, label);
   }
+
+  @Override
+  public boolean is_simple () {
+    return true;
+  }
 }

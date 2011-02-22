@@ -45,4 +45,8 @@ public class SimpleGraph<N,E> extends SimpleDiGraph<N, E> {
     super._set (from, to, weight, label);
     super._set (to, from, weight, label);
   }
+  @Override
+  public boolean is_directed () {
+    return false;
+  }
 }

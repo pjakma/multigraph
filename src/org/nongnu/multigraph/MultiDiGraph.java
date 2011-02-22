@@ -35,7 +35,7 @@ import java.util.*;
 public class MultiDiGraph<N,E>
        extends Observable
        implements Graph<N,E> {
-
+  
   // Hash of user-specific N-type node objects to internal Node objects
   HashMap<N,Node<N,E>> nodes;
   private Set<N> nodeset;
@@ -407,5 +407,25 @@ public class MultiDiGraph<N,E>
     if (!notifyAll)
       notifyObjs.add (arg);
   }
+
+  @Override
+  public boolean is_directed () {
+    return true;
+  }
+
+  @Override
+  public boolean is_simple () {
+    return false;
+  }
   
+  public boolean is_linked (N from, N to) {
+    Node<N,E> nf, nt;
+    
+    if ((nf = nodes.get (from)) == null)
+      return false;
+    if ((nt = nodes.get ((to))) == null)
+      return false;
+    
+    return nf.isLinked (nt);
+  }
 }

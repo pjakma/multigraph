@@ -47,7 +47,17 @@ import java.util.*;
  * @author Paul Jakma
  */
 public interface Graph<N,E> extends Set<N> {
-
+  /**
+   * @return Whether the graph is directed or not, i.e. whether
+   *         edges have a direction.
+   */
+  boolean is_directed ();
+  /**
+   * @return Whether the graph is simple or not. A simple graph
+   *         allows only single edges between nodes.
+   */
+  boolean is_simple ();
+  
   /**
    * Set an edge from one node to another with the given label. 
    *
@@ -159,7 +169,14 @@ public interface Graph<N,E> extends Set<N> {
    *         or {@code null} otherwise.
    */
   Edge<N,E> edge (N from, N to);
-
+  
+  /**
+   * Determine if there is a link from one node to another.
+   * 
+   * @return True if an edge exists from -&gt; to
+   */
+  boolean is_linked (N from, N to);
+  
   /**
    * Find the edge with the given label, from the one node to another
    * node, if it exists.

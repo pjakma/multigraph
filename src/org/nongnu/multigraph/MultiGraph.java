@@ -54,4 +54,9 @@ public class MultiGraph<N,E> extends MultiDiGraph<N, E> {
         throw new AssertionError ("Unable to remove other half of edge!");
     return super.remove (o);
   }
+
+  @Override
+  public boolean is_directed () {
+    return false;
+  }
 }
