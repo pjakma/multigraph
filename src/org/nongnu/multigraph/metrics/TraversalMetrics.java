@@ -26,6 +26,25 @@ public class TraversalMetrics {
     return vals;
   }
   
+  /**
+   * Traverse the Graph and create a histogram of the normalised distribution
+   * of nodal out-degree. I.e. the probability of a given degree, for that degree.
+   * @param <N> The type of the nodes in the graph.
+   * @param <E> The type of the edges in the graph.
+   * @param graph The graph to traverse
+   * @return An integer array of the degree distribution, where the array
+   *         indices correspond to the degree.
+   */
+  public static <N,E> float [] norm_degree_distribution (Graph<N,E> graph) {
+    int [] degrees = degree_distribution (graph);
+    float [] vals = new float [degrees.length];
+    
+    for (int i = 0; i < degrees.length; i++)
+      vals[i] = (float)degrees[i]/graph.size ();
+    
+    return vals;
+  }
+  
   public interface node_test<N>  {
     public boolean test (N node);
   }
@@ -49,5 +68,15 @@ public class TraversalMetrics {
         count++;
     
     return count;
+  }
+  
+  /**
+   * Traverse the graph and count the number of edges.
+   */
+  public static <N,E> int edges (final Graph<N,E> graph) {
+    int count = 0;
+    for (N node : graph)
+      count+= graph.edge_outdegree (node);
+    return count / (graph.is_directed () ? 1 : 2);
   }
 }
