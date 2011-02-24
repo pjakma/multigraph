@@ -18,10 +18,12 @@ package org.nongnu.multigraph;
 import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Filter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.MemoryHandler;
+import java.util.regex.Pattern;
 
 /**
  * Custom debug class with support for various print statements, different debug levels
@@ -59,8 +61,60 @@ public class debug {
   private static java.util.logging.Formatter fmter = new java.util.logging.Formatter () {
     @Override
     public String format (LogRecord record) {
-      return record.getLevel () + ": " + record.getMessage ();
+      String classname = record.getSourceClassName ();
+      int lastdot = classname.lastIndexOf ('.');
+      
+      if (lastdot < classname.length () - 1)
+        classname = classname.substring (classname.lastIndexOf ('.') + 1);
+      
+      return "[" + classname
+              + "#" + record.getSourceMethodName ()
+              + "]: "
+             + record.getMessage ();
     }
+  };
+  
+  private static Pattern classfilter = null;
+  private static Pattern methodfilter = null;
+  private static Pattern msgfilter = null;
+  private static boolean filterneg = false;
+  
+  private static Filter filter = new Filter () {
+    @Override
+    public boolean isLoggable (LogRecord record) {
+      if (!filterneg) {
+        boolean c 
+          = (classfilter == null 
+             || classfilter.matcher (record.getSourceClassName ())
+                                    .matches ());
+        boolean m
+          = (methodfilter == null
+             || methodfilter.matcher (record.getSourceMethodName ())
+                                     .matches ());
+        boolean msg
+          = (msgfilter == null
+             || msgfilter.matcher (record.getMessage ())
+                                  .matches ());
+        
+        return c && m && msg;
+      } else {
+        boolean c 
+          = (classfilter != null 
+             && classfilter.matcher (record.getSourceClassName ())
+                                  .matches ());
+        boolean m
+          = (methodfilter != null
+             && methodfilter.matcher (record.getSourceMethodName ())
+                                   .matches ());
+        boolean msg
+          = (msgfilter != null
+             && msgfilter.matcher (record.getMessage ())
+                                .matches ());
+      
+      return !(c || m || msg);
+      }
+    }
+    
   };
   
   private static ConsoleHandler ch = new ConsoleHandler ();
@@ -68,6 +122,51 @@ public class debug {
     = new MemoryHandler (ch, 4096000, level.level);
   public static Logger logger = Logger.getAnonymousLogger ();
   private static boolean once = true;
+  
+  public static String classfilter () {
+    return classfilter == null ? "" : classfilter.pattern ();
+  }
+  /**
+   * Set a regular expression to filter log records with. Only messages emitted from
+   * classes with names matching the regex will be logged. 
+   * @param s Regular expression acceptable to Pattern, or the empty string "" to unset.
+   */
+  public static void classfilter (String s) {
+    classfilter = (s.equals ("") ? null : Pattern.compile (s));
+  }
+  
+  /**
+   * Set a regular expression to filter log records with. Only messages whose
+   * content matches the regex will be logged.
+   * @param s Regular expression acceptable to Pattern, or the empty string 
+   *          "" to unset.
+   */
+  public static void msgfilter (String s) {
+    msgfilter = (s.equals ("") ? null : Pattern.compile (s));
+  }
+  public static String msgfilter () {
+    return msgfilter == null ? "" : msgfilter.pattern ();
+  }
+  
+  public static String methodfilter () {
+    return methodfilter == null ? "" : methodfilter.pattern ();
+  }
+  /**
+   * Set a regular expression to filter log records with. Only messages emitted from
+   * methods with names matching the regex will be logged.
+   * @param s Regular expression acceptable to Pattern, or the empty string
+   *          "" to unset.
+   */
+  public static void methodfilter (String s) {
+    methodfilter = (s.equals ("") ? null : Pattern.compile (s));
+  }
+  
+  public static boolean invert () {
+    return filterneg;
+  }
+  public static void invert (boolean v) {
+    filterneg = v;
+  }
   
   /**
    * The current debug level. Messages below this level will not be captured.
@@ -148,22 +247,34 @@ public class debug {
 	  return applies (levels.DEBUG);
   }
   
-  public static void printf (levels d, String s) {
-    if (!applies (d))
-      return;
+  private static void _printf (StackTraceElement caller, levels d, String s) {
+    if (!applies (d)) return;
     
     if (once) {
       ch.setFormatter (fmter);
       logger.setLevel (levels.DEBUG.level);
       ch.setLevel (debug.levels.DEBUG.level);
       logger.addHandler (mh);
+      logger.setFilter (filter);
       once = false;
     }
     
-    logger.log (d.level, s);
+    logger.logp (d.level, caller.getClassName (), caller.getMethodName (), s);
   }
   
-  public static void printf (levels d, String format, Object... args) {
+  public static void printf (levels d, String s) {
+    if (!applies (d)) return;
+    
+    _printf (new Throwable ().getStackTrace ()[1],
+             d, s);
+  }
+  public static void printf (String s) {
+    _printf (new Throwable ().getStackTrace ()[1], levels.DEBUG, s);
+  }
+  
+  /* printf with varargs */
+  private static void _printf (StackTraceElement caller, levels d, 
+                              String format, Object... args) {
     if (!applies (d))
       return;
     
@@ -171,24 +282,27 @@ public class debug {
     
     new Formatter ((sb = new StringBuilder ())).format (format, args);
     
-    printf (d, sb.toString ());
+    _printf (caller, d, sb.toString ());
+  }
+  
+  public static void printf (levels d, String format, Object... args) {
+    _printf (new Throwable ().getStackTrace ()[1], d, format, args);
   }
 
-  public static void println (levels d, String s) {
-    if (!applies (d))
-      return;
-    
-    printf (d, s + "\n");
-  }
-
-  // default debug level versions
   public static void printf (String format, Object... args) {
-    printf (levels.DEBUG, format, args);
+    _printf (new Throwable ().getStackTrace ()[1], levels.DEBUG, format, args);
   }
-  public static void printf (String s) {
-    printf (levels.DEBUG, s);
+  
+  /* println */
+  private static void _println (StackTraceElement caller, levels d, String s) {
+    if (!applies (d)) return;
+    _printf (caller, d, s + "\n");
+  }
+  
+  public static void println (levels d, String s) {
+    _println (new Throwable ().getStackTrace ()[1], d, s);
   }
   public static void println (String s) {
-    println (levels.DEBUG, s);
+    _println (new Throwable ().getStackTrace ()[1], levels.DEBUG, s);
   }
 }
