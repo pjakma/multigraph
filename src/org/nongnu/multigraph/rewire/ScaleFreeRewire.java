@@ -3,6 +3,7 @@ package org.nongnu.multigraph.rewire;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.nongnu.multigraph.EdgeLabeler;
 import org.nongnu.multigraph.Graph;
 import org.nongnu.multigraph.debug;
 
@@ -157,10 +158,13 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   protected static boolean m_mode_stop (m_modes m_mode, int m, int added, int pass) {
     /* In no case should we allow the process to spin forever trying
      * to add a link but being inable to. As an arbitrary limit, we
-     * hard-bound all processes to m*2 passes
+     * hard-bound all processes to max(4,m*2) passes
      */
-    if (pass > m*2)
+    if (pass > Math.max (4,m*2)) {
+      debug.printf ("hit hard-limit on passes! mode/m/added/pass: %s/%d/%d/%d\n",
+                    m_mode.name (), m, added, pass);
       return true;
+    }
     
     switch (m_mode) {
       case STRICT: return added >= m;
@@ -240,7 +244,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
       int added = 0;
       int pass = 0;
       
-      debug.println ("ScaleFree, to_add: " + to_add);
+      debug.println ("to_add: " + to_add);
       
       do {
         /* ..should consider adding an edge to every existing node ... */
@@ -265,7 +269,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   }
   
   protected boolean add_link (N to_add, N to) {
-    debug.printf ("ScaleFree#add_link: %s to %s\n", to_add, to);
+    debug.printf ("%s to %s\n", to_add, to);
     
     if (graph.is_linked (to_add, to))
       return false;
@@ -280,7 +284,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
     int added = 0;
     int pass = 0;
     
-    debug.printf ("ScaleFree#add: toadd %s\n", to_add);
+    debug.printf ("toadd %s\n", to_add);
     
     do {
       for (N node : graph.random_node_iterable ()) {
