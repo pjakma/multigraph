@@ -20,6 +20,7 @@ package org.nongnu.multigraph.rewire;
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
 
+import org.nongnu.multigraph.EdgeLabeler;
 import org.nongnu.multigraph.Graph;
 import org.nongnu.multigraph.layout.Layout;
 import org.nongnu.multigraph.layout.PositionableNode;

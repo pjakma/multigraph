@@ -1,5 +1,6 @@
 package org.nongnu.multigraph.rewire;
 
+import org.nongnu.multigraph.EdgeLabeler;
 import org.nongnu.multigraph.Graph;
 import org.nongnu.multigraph.debug;
 

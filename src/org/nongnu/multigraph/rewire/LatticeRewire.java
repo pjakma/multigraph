@@ -17,6 +17,7 @@
  */
 package org.nongnu.multigraph.rewire;
 
+import org.nongnu.multigraph.EdgeLabeler;
 import org.nongnu.multigraph.Graph;
 /**
  * Wire up the nodes in a 2D lattice. The algorithm defaults to 

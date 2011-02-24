@@ -19,6 +19,7 @@ package org.nongnu.multigraph.rewire;
 
 import java.util.Random;
 
+import org.nongnu.multigraph.EdgeLabeler;
 import org.nongnu.multigraph.Graph;
 
 /** 

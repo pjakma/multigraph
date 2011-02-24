@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with MultiGraph.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.nongnu.multigraph.rewire;
+package org.nongnu.multigraph;
 
 /**
  * Callback interface to forward the labelling of each new edge back to 

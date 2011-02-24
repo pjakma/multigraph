@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import org.nongnu.multigraph.EdgeLabeler;
 import org.nongnu.multigraph.Graph;
 import org.nongnu.multigraph.debug;
 import org.nongnu.multigraph.layout.PositionableNode;
