@@ -82,6 +82,9 @@ public class debug {
   private static Filter filter = new Filter () {
     @Override
     public boolean isLoggable (LogRecord record) {
+      /* !filterneg: all filters that are set must match the record for
+       * it to be logged. I.e. an inclusive match.
+       */
       if (!filterneg) {
         boolean c 
           = (classfilter == null 
@@ -98,6 +101,9 @@ public class debug {
         
         return c && m && msg;
       } else {
+        /* inverse filter: all filters that are set must NOT match the record
+         * for it to be loggable.
+         */
         boolean c 
           = (classfilter != null 
              && classfilter.matcher (record.getSourceClassName ())
@@ -269,14 +275,14 @@ public class debug {
              d, s);
   }
   public static void printf (String s) {
+    if (!applies ()) return;
     _printf (new Throwable ().getStackTrace ()[1], levels.DEBUG, s);
   }
   
   /* printf with varargs */
   private static void _printf (StackTraceElement caller, levels d, 
                               String format, Object... args) {
-    if (!applies (d))
-      return;
+    if (!applies (d)) return;
     
     StringBuilder sb;
     
@@ -286,10 +292,12 @@ public class debug {
   }
   
   public static void printf (levels d, String format, Object... args) {
+    if (!applies (d)) return;
     _printf (new Throwable ().getStackTrace ()[1], d, format, args);
   }
 
   public static void printf (String format, Object... args) {
+    if (!applies ()) return;
     _printf (new Throwable ().getStackTrace ()[1], levels.DEBUG, format, args);
   }
   
@@ -300,9 +308,11 @@ public class debug {
   }
   
   public static void println (levels d, String s) {
+    if (!applies (d)) return;
     _println (new Throwable ().getStackTrace ()[1], d, s);
   }
   public static void println (String s) {
+    if (!applies ()) return;
     _println (new Throwable ().getStackTrace ()[1], levels.DEBUG, s);
   }
 }
