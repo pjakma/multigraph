@@ -1,6 +1,8 @@
 package org.nongnu.multigraph.rewire;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.nongnu.multigraph.EdgeLabeler;
@@ -137,11 +139,13 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   m_modes m_mode = m_modes.MIN;
   
   @SuppressWarnings ("unchecked")
-  private void _init_nodes () {
+  protected void _init_nodes () {
     /* new N[..] is not allowed in java, but this works */
     nodes = (N []) new Object[graph.size ()];
-    graph.clear_all_edges ();
-    graph.toArray (nodes);
+    
+    int i = 0;
+    for (N n : graph.random_node_iterable ())
+      nodes[i++] = n;
   }
   
   /**
@@ -152,12 +156,11 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
    */
   public ScaleFreeRewire (Graph<N, E> graph, EdgeLabeler<N, E> el) {
     super (graph, el);
-    _init_nodes ();
   }
   
   protected static boolean m_mode_stop (m_modes m_mode, int m, int added, int pass) {
     /* In no case should we allow the process to spin forever trying
-     * to add a link but being inable to. As an arbitrary limit, we
+     * to add a link but being unable to. As an arbitrary limit, we
      * hard-bound all processes to max(4,m*2) passes
      */
     if (pass > Math.max (4,m*2)) {
@@ -183,7 +186,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
    *                 before any links were added to this new node.
    * @return True if a link should be created
    */
-  protected boolean consider_link (N to_add, N vi, int numlinks) {
+  protected boolean consider_link (N to_add, N vi, long numlinks) {
     int ki = graph.nodal_outdegree (vi);
     
     debug.printf ("\tvi: %s, ki: %d\n", vi, ki);
@@ -226,6 +229,30 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
     }
   }
   
+  protected Iterator<N> nodes_iterator (final int split) {
+    return new Iterator<N> () {
+      int i = 0;
+      @Override
+      public boolean hasNext () {
+        return i < split;
+      }
+
+      @Override
+      public N next () {
+        if (i >= split) throw new NoSuchElementException ();
+        
+        return nodes[i++];
+      }
+
+      @Override
+      public void remove () {
+        throw new UnsupportedOperationException ();
+      }
+    };
+  }
+  
+  protected int rewire_callback (int split) { return 0; }
+  
   @Override
   public void rewire () {
     /* this tracks the index at which our set of nodes is split between
@@ -235,34 +262,28 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
     int links = m;
     
     graph.plugObservable ();
+    graph.clear_all_edges ();
+    _init_nodes ();
     
     m0 ();
     
     /* every new node to be attached to the existing graph.. */
     while (split < nodes.length) {
       N to_add = nodes[split];
-      int added = 0;
-      int pass = 0;
+      final int tmpsplit = split;
       
       debug.println ("to_add: " + to_add);
       
-      do {
-        /* ..should consider adding an edge to every existing node ... */
-        for (int i = 0; i < split && !m_mode_stop (m_mode, m, added, pass); i++) {
-          N vi = nodes[r.nextInt (split)];
-          
-          if (consider_link (to_add, vi, links)
-              && add_link (to_add, vi))
-            added++;
+      /* ..should consider adding an edge to every existing node ... */
+      links += add (to_add, links, new Iterable<N> () {
+        @Override
+        public Iterator<N> iterator () {
+          return nodes_iterator (tmpsplit);
         }
-      } while (!m_mode_stop (m_mode, m, added, ++pass));
-      /* Now node was added successfully, update the split, go onto next
-       * next node.
-       * 
-       * we keep this separate count for links, so that it remains stable
-       * for entirety of adding links for new node.
-       */
-      links += added;
+      });
+      
+      links += rewire_callback (split);
+      
       split++;
     }
     graph.unplugObservable ();
@@ -280,33 +301,34 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
     return true;
   }
   
-  protected void add (N to_add, int numlinks) {
+  protected int add (N to_add, long numlinks, Iterable<N> iter) {
     int added = 0;
     int pass = 0;
     
     debug.printf ("toadd %s\n", to_add);
     
     do {
-      for (N node : graph.random_node_iterable ()) {
+      for (N node : iter) {
         if (m_mode_stop (m_mode, m, added, pass))
           break;
         if (to_add != node
             && graph.nodal_outdegree (node) > 0
+            && !graph.is_linked (to_add, node)
             && consider_link (to_add, node, numlinks)
             && add_link (to_add, node))
               added++;
       }
       pass++;
-      numlinks += added;
     } while (!m_mode_stop (m_mode, m, added, pass));
+    
+    return added;
   }
   
   @Override
   public void add (N to_add) {
-    int numlinks = (int)(graph.avg_nodal_degree () * graph.size ());
     
     graph.plugObservable ();
-    add (to_add, numlinks);
+    add (to_add, graph.link_count (), graph.random_node_iterable ());
     graph.unplugObservable ();
   }
 }

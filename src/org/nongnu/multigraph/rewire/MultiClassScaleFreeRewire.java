@@ -55,7 +55,7 @@ public class MultiClassScaleFreeRewire<N,E> extends ScaleFreeRewire<N,E> {
     return pi <= fr;
   }
   
-  protected void add_like_links (int split) {
+  protected int add_like_links (int split) {
     /* links may be added between like nodes */
     int added = 0;
     int pass = 0;
@@ -76,29 +76,12 @@ public class MultiClassScaleFreeRewire<N,E> extends ScaleFreeRewire<N,E> {
           }
         }
     } while (!m_mode_stop (p_mode, p, added, ++pass));
+    return added;
   }
   
   @Override
-  public void rewire () {
-    int split = m + 1;
-    
-    graph.plugObservable ();
-    
-    m0 ();
-    
-    /* Add the new node to an existing transit node */
-    while (split < nodes.length) {
-      N to_add = nodes[split];
-      
-      /* preferentially attach to_add, as normal */
-      add (to_add, split);
-      
-      /* consider like-links */
-      add_like_links (split);
-      
-      split++;
-    }
-    
-    graph.unplugObservable ();
+  protected int rewire_callback (int split) {
+    /* consider like-links */
+    return add_like_links (split);
   }
 }
