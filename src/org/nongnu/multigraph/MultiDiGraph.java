@@ -241,6 +241,15 @@ public class MultiDiGraph<N,E>
     return avg;
   }
   
+  public synchronized long link_count () {
+    long num = 0;
+    
+    for (Node<N,E> n : nodes.values ()) {
+      num += n.nodal_outdegree ();
+    }
+    return num;
+  }
+  
   public synchronized int max_nodal_degree () {
     int max = 0;
     int d;

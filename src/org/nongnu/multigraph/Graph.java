@@ -129,6 +129,11 @@ public interface Graph<N,E> extends Set<N> {
   float avg_nodal_degree ();
   
   /**
+   * @return The number of edges in the graph
+   */
+  long link_count ();
+  
+  /**
    * @return The maximum degree of any node in the graph
    */
   int max_nodal_degree ();
