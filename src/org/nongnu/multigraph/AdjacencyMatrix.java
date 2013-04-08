@@ -3,7 +3,6 @@ package org.nongnu.multigraph;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
-import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 /**
