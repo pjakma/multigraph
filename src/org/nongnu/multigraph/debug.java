@@ -89,15 +89,15 @@ public class debug {
         boolean c 
           = (classfilter == null 
              || classfilter.matcher (record.getSourceClassName ())
-                                    .matches ());
+                                    .find ());
         boolean m
           = (methodfilter == null
              || methodfilter.matcher (record.getSourceMethodName ())
-                                     .matches ());
+                                     .find ());
         boolean msg
           = (msgfilter == null
              || msgfilter.matcher (record.getMessage ())
-                                  .matches ());
+                                  .find ());
         
         return c && m && msg;
       } else {
@@ -107,15 +107,15 @@ public class debug {
         boolean c 
           = (classfilter != null 
              && classfilter.matcher (record.getSourceClassName ())
-                                  .matches ());
+                                  .find ());
         boolean m
           = (methodfilter != null
              && methodfilter.matcher (record.getSourceMethodName ())
-                                   .matches ());
+                                   .find ());
         boolean msg
           = (msgfilter != null
              && msgfilter.matcher (record.getMessage ())
-                                .matches ());
+                                .find ());
       
       return !(c || m || msg);
       }
