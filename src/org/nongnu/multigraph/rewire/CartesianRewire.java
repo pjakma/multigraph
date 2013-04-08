@@ -189,13 +189,11 @@ public class CartesianRewire<N extends PositionableNode, E>
     if (range <= 0)
       return;
     
-    graph.plugObservable ();
     make_grid_index ();
     
     if (graph.size () < 2)
       return;
     
     rewire_grid ();
-    graph.unplugObservable ();
   }
 }

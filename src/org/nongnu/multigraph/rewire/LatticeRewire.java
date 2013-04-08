@@ -50,7 +50,6 @@ public class LatticeRewire<N, E> extends Rewire<N, E> {
     N pn = null;
     int i = 0;
     
-    graph.plugObservable ();
     graph.clear_all_edges ();
     
     for (N n : graph) {
@@ -70,6 +69,5 @@ public class LatticeRewire<N, E> extends Rewire<N, E> {
       if (i == 0)
         pn = null;
     }
-    graph.unplugObservable ();
   }
 }

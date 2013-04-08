@@ -261,7 +261,6 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
     int split = m + 1;
     int links = m;
     
-    graph.plugObservable ();
     graph.clear_all_edges ();
     _init_nodes ();
     
@@ -286,7 +285,6 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
       
       split++;
     }
-    graph.unplugObservable ();
   }
   
   protected boolean add_link (N to_add, N to) {
@@ -326,9 +324,6 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   
   @Override
   public void add (N to_add) {
-    
-    graph.plugObservable ();
     add (to_add, graph.link_count (), graph.random_node_iterable ());
-    graph.unplugObservable ();
   }
 }
