@@ -1,5 +1,7 @@
 <project name="org.nongnu.multigraph" default="compile">
-
+    <property file="${user.home}/.ant.global.properties"/>
+    <property file="build.properties"/>
+    
     <property name="src.dir"     value="src"/>
     <property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
@@ -13,7 +15,9 @@
 
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" source="1.6"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" source="1.6"
+               debug="${compile.debug}" debuglevel="${compile.debug.level}"
+               fork="${compile.fork}"/>
     </target>
 
     <target name="jar" depends="compile">
@@ -27,7 +31,9 @@
 
     <target name="test" depends="compile">
         <mkdir dir="${tests.dir}" />
-        <javac srcdir="tests" destdir="${tests.dir}" source="1.6">
+        <javac srcdir="tests" destdir="${tests.dir}" source="1.6"
+               debug="${compile.debug}" debuglevel="${compile.debug.level}"
+               fork="${compile.fork}">
 	  <classpath>
 	    <pathelement location="${classes.dir}"/>
 	    <pathelement location="${junit.jar}"/>
