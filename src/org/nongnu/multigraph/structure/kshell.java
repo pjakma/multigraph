@@ -58,6 +58,6 @@ public class kshell {
       
     } while (remain > 0);
     
-    return kshell;
+    return kshell - 1;
   }
 }
