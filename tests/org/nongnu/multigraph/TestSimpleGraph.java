@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TestSimpleGraph {
-  Graph<String,String> g = new MultiDiGraph<String,String> ();
+  Graph<String,String> g = new SimpleGraph<String,String> ();
   int start_size;
   
   @BeforeClass
@@ -50,17 +50,6 @@ public class TestSimpleGraph {
       g.set (n2, n1, l); 
     }
     
-    /* some multiply connected */
-    for (int i = 20; i < 30; i++) {
-      String n1 = ("Node" + (i - 1)).intern ();
-      String n2 = ("Node" + i).intern ();
-      String l = ("Edge" + (i - 1) + "-" + i).intern ();
-      String l2 = (l + "-2").intern ();
-      g.set (n1, n2, l);
-      g.set (n1, n2, l2);
-      g.set (n2, n1, l); 
-    }
-    
     start_size = g.size ();
     System.out.println ("graph:\n" + g);
   }
@@ -74,17 +63,29 @@ public class TestSimpleGraph {
       g.edge_outdegree (n2),
     };
     
-    assertTrue (g.remove (n1, n2, l) == expect);
-    assertTrue (g.contains (n1));
-    assertTrue (g.contains (n2));
-    assertTrue (g.edge_outdegree (n2) == outdegrees[1]);
-    assertTrue (g.size () == s1);
-    assertTrue (g.edges (n1).contains (l) == false);
+    assertTrue ("before: nodal and edge degree same",
+                g.nodal_outdegree (n1) == g.edge_outdegree (n1));
+    assertTrue ("before: nodal and edge degree same",
+        g.nodal_outdegree (n2) == g.edge_outdegree (n2));
+    
+    assertTrue ("Remove as expected", g.remove (n1, n2, l) == expect);
+    assertTrue ("Still contains", g.contains (n1));
+    assertTrue ("Still contains", g.contains (n2));
+    assertTrue ("size unchanged", g.size () == s1);
+    assertTrue ("edge should be removed", !g.edges (n1).contains (l));
+    assertTrue ("edge should be removed", !g.edges (n2).contains (l));
+    assertTrue ("before: nodal and edge degree same",
+                g.nodal_outdegree (n1) == g.edge_outdegree (n1));
+    assertTrue ("before: nodal and edge degree same",
+                g.nodal_outdegree (n2) == g.edge_outdegree (n2));
     
     if (expect) {
       assertTrue (g.edge_outdegree (n1) == outdegrees[0] - 1);
+      assertTrue (g.edge_outdegree (n2) == outdegrees[1] - 1);
+      
     } else {
       assertTrue (g.edge_outdegree (n1) == outdegrees[0]); 
+      assertTrue (g.edge_outdegree (n2) == outdegrees[1]);
     }
   }
   @Test
@@ -102,27 +103,10 @@ public class TestSimpleGraph {
     System.out.println ("strong");
     testRemoveNNL1 ("Node12".intern (), "Node13".intern (),
                     "Edge12-13".intern (), true);
-    testRemoveNNL1 ("Node13".intern (), "Node12".intern (),
-                    "Edge12-13".intern (), true);
     testRemoveNNL1 ("Node12".intern (), "Node13".intern (),
                     "Edge12-13".intern (), false);
     testRemoveNNL1 ("Node13".intern (), "Node12".intern (),
                     "Edge12-13".intern (), false);
-    
-    /* multi connected */
-    System.out.println ("multi");
-    testRemoveNNL1 ("Node22".intern (), "Node23".intern (),
-                    "Edge22-23".intern (), true);
-    testRemoveNNL1 ("Node23".intern (), "Node22".intern (),
-                    "Edge22-23".intern (), true);
-    testRemoveNNL1 ("Node22".intern (), "Node23".intern (),
-                    "Edge22-23-2".intern (), true);
-    testRemoveNNL1 ("Node22".intern (), "Node23".intern (),
-                    "Edge22-23".intern (), false);
-    testRemoveNNL1 ("Node22".intern (), "Node23".intern (),
-                    "Edge22-23".intern (), false);
-    testRemoveNNL1 ("Node23".intern (), "Node22".intern (),
-                    "Edge22-23".intern (), false);
   }
   
 //  @Test
