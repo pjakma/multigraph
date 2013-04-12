@@ -199,6 +199,12 @@ public interface Graph<N,E> extends Set<N> {
    */
   public Iterable<N> random_node_iterable ();
   
+  /**
+   * Provide a random-access Iterable over the &lt;Edge&lt;N,E&gt;&gt;-edges from the
+   * given node.
+   */
+  public Iterable<Edge<N,E>> random_edge_iterable (N n);
+  
   /* Shame there's no Observable interface ? */
   /**
    * @see java.util.Observable
