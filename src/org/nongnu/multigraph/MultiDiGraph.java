@@ -283,6 +283,17 @@ public class MultiDiGraph<N,E>
     };
   }
   
+  public Iterable<Edge<N,E>> random_edge_iterable (final N n) {
+    return new Iterable<Edge<N,E>> () {
+      @Override
+      public Iterator<Edge<N,E>> iterator () {
+        ArrayList<Edge<N,E>> al = new ArrayList<Edge<N,E>> (MultiDiGraph.this.edges (n));
+        Collections.shuffle (al);
+        return al.iterator ();
+      }
+    };
+  }
+  
   /* Collection/Set interfaces
    *
    * Ideally, we'd have just extended an existing Set class, however that
@@ -378,11 +389,11 @@ public class MultiDiGraph<N,E>
   private boolean notifyAll = false;
   private Set<Object> notifyObjs = new HashSet<Object> ();
   
-  public void plugObservable () {
+  public synchronized void plugObservable () {
     plugObservable = true;
-    notifyAll = false;
   }
-  public void unplugObservable () {
+  
+  public synchronized void unplugObservable () {
     if (!plugObservable)
       return;
     
@@ -393,27 +404,33 @@ public class MultiDiGraph<N,E>
     else
       for (Object o : notifyObjs)
         super.notifyObservers (o);
+    
     notifyObjs.clear ();
+    notifyAll = false;
   }
   
   @Override
-  public void notifyObservers () {
+  public synchronized void notifyObservers () {
     if (!plugObservable) {
       super.notifyObservers (null);
       return;
     }
+    /* plugged */
     notifyAll = true;
   }
 
   @Override
-  public void notifyObservers (Object arg) {
+  public synchronized void notifyObservers (Object arg) {
     if (!plugObservable) {
-      if (arg == null)
-        notifyAll = true;
       super.notifyObservers (arg);
       return;
     }
-    if (!notifyAll)
+    
+    /* plugged */
+    if (arg == null)
+      notifyAll = true;
+    
+    if (!notifyAll && arg != null)
       notifyObjs.add (arg);
   }
 
