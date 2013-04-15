@@ -42,8 +42,7 @@ class Node<N,E> {
    * label:edge should be 1:1
    */ 
   private Map<Node<N,E>,Map<E,Edge<N,E>>> edgelist 
-    = Collections.synchronizedMap
-      (new HashMap<Node<N,E>,Map<E,Edge<N,E>>> ());
+    = new HashMap<Node<N,E>,Map<E,Edge<N,E>>> ();
   /* Cache a set of all edges, so that edges() can be performant */
   private Set<Edge<N,E>> all_edges = new HashSet<Edge<N,E>> ();
   
