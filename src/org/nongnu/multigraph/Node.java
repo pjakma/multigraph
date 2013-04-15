@@ -100,7 +100,7 @@ class Node<N,E> {
       /* If there are no more edges to the 'to' node, then remove
        * its entry from the general map of nodes
        */
-      if (to_edges.size () == 0) {
+      if (to_edges.isEmpty ()) {
         if (edgelist_it == null)
           return edgelist.remove (to) != null;
         edgelist_it.remove ();
