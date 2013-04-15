@@ -192,6 +192,7 @@ class Node<N,E> {
     return edgelist.containsKey (to);
   }
   
+  @Override
   public String toString () {
     return unode.toString ();
   }

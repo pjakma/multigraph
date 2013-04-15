@@ -46,10 +46,12 @@ public class ShortestPathFirst<N,E> {
       debug.printf ("SPFnode: created %s\n", this);      
     }
     
+    @Override
     public int compareTo (SPFnode<N,L> v) {
       return this.cost - v.cost;
     }
     
+    @Override
     public String toString () {
       return "N: " + n 
              + ", " + cost

@@ -104,9 +104,11 @@ public class MultiDiGraph<N,E>
   /**
    * 
    */
+  @Override
   public synchronized void set (N from, N to, E label)
     { _set (from, to, 1, label); }
   // Same, but for a weighted edge
+  @Override
   public synchronized void set (N from, N to, E label, int weight)
     { _set (from, to, weight, label); }
   
@@ -152,14 +154,17 @@ public class MultiDiGraph<N,E>
     return nf.remove (nt);
   }
   
+  @Override
   public synchronized boolean remove (N from, N to, E label) {
     return _remove (from, to, label);
   }
   
+  @Override
   public synchronized boolean remove (N from, N to) {
     return _remove (from, to, null);
   }
   
+  @Override
   public synchronized Set<Edge<N,E>> edges (N from) {
     Node<N,E> n;
     
@@ -171,6 +176,7 @@ public class MultiDiGraph<N,E>
     return Collections.unmodifiableSet (n.edges ());
   }
   
+  @Override
   public synchronized Collection<Edge<N,E>> edges (N from, N to) {
     Node<N,E> nf, nt;
     
@@ -182,6 +188,7 @@ public class MultiDiGraph<N,E>
     return Collections.unmodifiableCollection (nf.edges (nt));
   }
   
+  @Override
   public Edge<N, E> edge (N from, N to) {
     Collection<Edge<N,E>> edges = edges (from, to);
 
@@ -194,6 +201,7 @@ public class MultiDiGraph<N,E>
     return null;
   }
 
+  @Override
   public Edge<N, E> edge (N from, N to, E label) {
     Collection<Edge<N,E>> edges = edges (from, to);
 
@@ -207,6 +215,7 @@ public class MultiDiGraph<N,E>
     return null;
   }
 
+  @Override
   public synchronized Set<N> successors (N node) {
     Set<N> sc = new HashSet<N> ();
     Node<N,E> n;
@@ -222,14 +231,17 @@ public class MultiDiGraph<N,E>
     return sc;
   }
 
+  @Override
   public synchronized int edge_outdegree (N node) {
     return get_node(node).edge_outdegree ();
   }
   
+  @Override
   public synchronized int nodal_outdegree (N node) {
     return get_node(node).nodal_outdegree();
   }
   
+  @Override
   public synchronized float avg_nodal_degree () {
     float avg = 0;
     int num = 0;
@@ -241,6 +253,7 @@ public class MultiDiGraph<N,E>
     return avg;
   }
   
+  @Override
   public synchronized long link_count () {
     long num = 0;
     
@@ -250,6 +263,7 @@ public class MultiDiGraph<N,E>
     return num;
   }
   
+  @Override
   public synchronized int max_nodal_degree () {
     int max = 0;
     int d;
@@ -262,6 +276,7 @@ public class MultiDiGraph<N,E>
     return max;
   }
   
+  @Override
   public synchronized String toString () {
     StringBuilder sb = new StringBuilder ();
     for (Node<N,E> n : nodes.values ()) {
@@ -272,6 +287,7 @@ public class MultiDiGraph<N,E>
     return sb.toString ();
   }
   
+  @Override
   public Iterable<N> random_node_iterable () {
     return new Iterable<N> () {
       @Override
@@ -283,6 +299,7 @@ public class MultiDiGraph<N,E>
     };
   }
   
+  @Override
   public Iterable<Edge<N,E>> random_edge_iterable (final N n) {
     return new Iterable<Edge<N,E>> () {
       @Override
@@ -316,29 +333,42 @@ public class MultiDiGraph<N,E>
    */
   
   // Add operations add disconnected nodes.
+  @Override
   public boolean add (N node) { return (get_node (node) != null); }
+  @Override
   public boolean addAll (Collection<? extends N> c) {
     return nodeset.addAll (c);
   }
+  @Override
   public void clear () { 
     nodes.clear ();
     setChanged ();
     notifyObservers ();
   }
+  @Override
   public boolean contains (Object o) { return nodeset.contains (o); }
+  @Override
   public boolean containsAll (Collection<?> c) { 
     return nodeset.containsAll (c);
   }
+  @Override
   public boolean equals (Object o) { return nodeset.equals (o); }
+  @Override
   public int hashCode () { return nodeset.hashCode (); }
+  @Override
   public boolean isEmpty () { return nodeset.isEmpty (); }
+  @Override
   public int size () { return nodeset.size (); }
   
+  @Override
   public Object[] toArray () { return nodeset.toArray (); }
   @SuppressWarnings("hiding")
+  @Override
   public <N> N[] toArray (N[] a) { return nodeset.toArray (a); }
+  @Override
   public Iterator<N> iterator() { return nodeset.iterator (); }
   
+  @Override
   public void clear_all_edges () {
     for (Node<N,E> n : nodes.values ())
       n.clear ();
@@ -349,6 +379,7 @@ public class MultiDiGraph<N,E>
 
   /* same reasoning as above for the unchecked */
   @SuppressWarnings ("unchecked")
+  @Override
   public synchronized boolean remove (Object o) {
     Node<N,E> node = nodes.get ((N) o);
     boolean ret = false;
@@ -366,6 +397,7 @@ public class MultiDiGraph<N,E>
     
     return nodeset.remove (o) ? true : ret;
   }
+  @Override
   public boolean removeAll (Collection<?> c) {
     int size1 = size ();
     
@@ -374,6 +406,7 @@ public class MultiDiGraph<N,E>
     
     return size1 == size ();
   }
+  @Override
   public boolean retainAll (Collection<?> c) {
     int size1 = size ();
     
@@ -389,10 +422,12 @@ public class MultiDiGraph<N,E>
   private boolean notifyAll = false;
   private Set<Object> notifyObjs = new HashSet<Object> ();
   
+  @Override
   public synchronized void plugObservable () {
     plugObservable = true;
   }
   
+  @Override
   public synchronized void unplugObservable () {
     if (!plugObservable)
       return;
@@ -444,6 +479,7 @@ public class MultiDiGraph<N,E>
     return false;
   }
   
+  @Override
   public boolean is_linked (N from, N to) {
     Node<N,E> nf, nt;
     
