@@ -95,13 +95,6 @@ public interface Graph<N,E> extends Set<N> {
    * @see #add(Object)
    */
   boolean  remove (N from, N to);
-  /**
-   * Remove the given node and all its edges.
-   * @see #remove(Object, Object)
-   * @see #remove(Object)
-   * @see #set(Object, Object, Object)
-   */
-  boolean remove (N node);
   
   /**
    * Clear all edges from the graph.
