@@ -31,7 +31,8 @@
 
     <target name="test" depends="compile">
         <mkdir dir="${tests.dir}" />
-        <javac srcdir="tests" destdir="${tests.dir}" source="1.6"
+        <javac srcdir="tests" destdir="${tests.dir}"
+               source="${compile.source}"
                debug="${compile.debug}" debuglevel="${compile.debug.level}"
                fork="${compile.fork}">
 	  <classpath>
