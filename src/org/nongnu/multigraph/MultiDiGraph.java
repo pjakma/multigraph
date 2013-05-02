@@ -335,9 +335,18 @@ public class MultiDiGraph<N,E>
   // Add operations add disconnected nodes.
   @Override
   public boolean add (N node) { return (get_node (node) != null); }
+
   @Override
   public boolean addAll (Collection<? extends N> c) {
-    return nodeset.addAll (c);
+    /* we can't just directly use the nodeset implementation, as it doesn't
+     * provide a way to hook into add.
+     */
+    boolean ret = false;
+    for (N n : c)
+      if (add (n))
+        ret = true;
+    
+    return ret;
   }
   @Override
   public void clear () { 
@@ -399,6 +408,9 @@ public class MultiDiGraph<N,E>
   }
   @Override
   public boolean removeAll (Collection<?> c) {
+    /* can't just use the nodeset version, it provides no hook to
+     * ensure our remove is called.
+     */
     int size1 = size ();
     
     for (Object o : c)
