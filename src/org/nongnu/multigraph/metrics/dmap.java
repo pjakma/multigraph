@@ -4,6 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Distance maps, from each node to every other node. Suitable for sparse
+ * graphs.
+ * 
+ * @author Paul Jakma
+ *
+ * @param <N>
+ */
 public class dmap<N> {
   private static final long serialVersionUID = 1L;
   
