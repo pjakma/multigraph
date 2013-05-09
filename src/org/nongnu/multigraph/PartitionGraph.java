@@ -303,7 +303,6 @@ public class PartitionGraph<N,E> implements Graph<N,E>, Observer {
 
   @Override
   public void update (Observable o, Object o1) {
-    debug.println ("update " + o1);
     if (o != graph)
       return;
 
