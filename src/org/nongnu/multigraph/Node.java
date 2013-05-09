@@ -185,6 +185,18 @@ class Node<N,E> {
     return edges.values ();
   }
   
+  /* Return any 1 of the edges to 'to', if one exists */
+  Edge<N,E> edge (Node<N,E> to) {
+    Map<E,Edge<N,E>> edges;
+    
+    if (to == null)
+      throw new NullPointerException ("Node get requires non-null argument");
+    if ((edges = edgelist.get (to)) == null
+        || edges.isEmpty ())
+      return null;
+    return edges.values ().iterator ().next ();
+  }
+  
   boolean isLinked (Node<N,E> to) {
     if (to == null)
       throw new NullPointerException ("Node get requires non-null argument");

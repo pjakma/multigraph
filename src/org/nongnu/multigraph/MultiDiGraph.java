@@ -190,15 +190,14 @@ public class MultiDiGraph<N,E>
   
   @Override
   public Edge<N, E> edge (N from, N to) {
-    Collection<Edge<N,E>> edges = edges (from, to);
-
-    if (edges == null)
-      return null;
-
-    for (Edge<N,E> e : edges)
-      return e;
+    Node<N,E> nf, nt;
     
-    return null;
+    if ((nf = nodes.get (from)) == null)
+      return null;
+    if ((nt = nodes.get ((to))) == null)
+      return null;
+    
+    return nf.edge (nt);
   }
 
   @Override
