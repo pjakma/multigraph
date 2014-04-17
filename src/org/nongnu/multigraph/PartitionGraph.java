@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.nongnu.multigraph;
 
 import java.util.Collection;
@@ -62,7 +57,8 @@ public class PartitionGraph<N,E> implements Graph<N,E>, Observer {
     partitions[part_id (node)].add (node);
   }
   private void partition_remove (final N node) {
-    partitions[part_id (node)].remove (node);
+    if (!graph.contains (node))
+      partitions[part_id (node)].remove (node);
   }
 
   /**
@@ -112,16 +108,18 @@ public class PartitionGraph<N,E> implements Graph<N,E>, Observer {
 
   @Override
   public boolean remove (N from, N to, E label) {
+    boolean ret = graph.remove (from, to, label);
     partition_remove (from);
     partition_remove (to);
-    return graph.remove (from, to, label);
+    return ret;
   }
 
   @Override
   public boolean remove (N from, N to) {
+    boolean ret = graph.remove (from, to);
     partition_remove (from);
     partition_remove (to);
-    return graph.remove (from, to);
+    return ret;
   }
 
   @Override
