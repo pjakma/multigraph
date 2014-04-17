@@ -259,7 +259,8 @@ public class MultiDiGraph<N,E>
     for (Node<N,E> n : nodes.values ()) {
       num += n.nodal_outdegree ();
     }
-    return num;
+    /* Euler: sum of degrees = 2 * edges */
+    return num/2;
   }
   
   @Override
