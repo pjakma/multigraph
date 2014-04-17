@@ -48,7 +48,7 @@ public class dmap<N> {
       to_weights.put (to, w);
   }
   
-  Set<Map.Entry<N,Map<N,Integer>>> entrySet() {
+  public Set<Map.Entry<N,Map<N,Integer>>> entrySet() {
     return dmap.entrySet ();
   }
 }
