@@ -3,7 +3,6 @@ package org.nongnu.multigraph.metrics;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.nongnu.multigraph.Edge;
 import org.nongnu.multigraph.Graph;
 import org.nongnu.multigraph.debug;
@@ -14,6 +13,44 @@ import org.nongnu.multigraph.debug;
  *
  */
 public class TraversalMetrics {
+  /**
+   * action callback interface, for each node of a graph */
+  public interface graph_traversor<N,E> {
+    void node (N node);
+  }
+  
+  /**
+   * Simple convenience function to traverse a graph with the given traversor.
+   * @param <N>
+   * @param <E>
+   * @param graph
+   * @param gt
+   */
+  public static <N,E> void traverse_graph (Graph<N,E> graph,
+                                           graph_traversor<N,E> gt) {
+    for (N node : graph)
+      gt.node (node);
+  }
+  /**
+   * Simple convenience function to traverse a graph for each of the
+   * given traversors
+   */
+  public static <N,E> void traverse_graph (Graph<N,E> graph,
+                                           graph_traversor<N,E> [] gts) {
+    for (N node : graph)
+      for (graph_traversor<N,E> gt : gts)
+        gt.node (node);
+  }
+
+  public class traversor_degree_distribution<N,E> implements graph_traversor<N,E> {
+
+    @Override
+    public void node (N node) {
+      throw new UnsupportedOperationException ("Not supported yet.");
+    }
+    
+  }
+
   /**
    * Traverse the Graph and create a histogram of the distribution
    * of nodal out-degree.
@@ -122,7 +159,6 @@ public class TraversalMetrics {
   }
   
   public static <N,E> dmap<N> FloydWarshal (final Graph<N,E> graph) {
-    //int [][] d = new int[graph.size ()][graph.size ()];
     dmap<N> dmap = new dmap<N> ();
     
     for (N k : graph)
