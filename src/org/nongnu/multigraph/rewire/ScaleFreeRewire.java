@@ -1,6 +1,5 @@
 package org.nongnu.multigraph.rewire;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -109,15 +108,16 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
    * @return reference to this class.
    */
   public ScaleFreeRewire<N,E> m_mode (String m_mode) {
-    this.m_mode = m_modes.valueOf (m_mode.toUpperCase ());
+    this.m_mode (m_modes.valueOf (m_mode.toUpperCase ()));
     return this;
   }
 
-  enum m_modes {
+  public enum m_modes {
     /**
      * Strict interpretation of the m-value used, according
      * to the Barabasi-Albert model. I.e. exactly m links
-     * are added on each time-step.
+     * are added on each time-step. This means not all
+     * pairs of nodes may be considered.
      */
     STRICT,
     /**
@@ -136,7 +136,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
      */
     MAX,
   };
-  m_modes m_mode = m_modes.MIN;
+  m_modes m_mode = m_modes.STRICT;
   
   @SuppressWarnings ("unchecked")
   protected void _init_nodes () {
@@ -161,9 +161,9 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   protected static boolean m_mode_stop (m_modes m_mode, int m, int added, int pass) {
     /* In no case should we allow the process to spin forever trying
      * to add a link but being unable to. As an arbitrary limit, we
-     * hard-bound all processes to max(4,m*2) passes
+     * hard-bound all processes to max(10,m*10) passes
      */
-    if (pass > Math.max (4,m*2)) {
+    if (pass > Math.max (10,m*10)) {
       debug.printf ("hit hard-limit on passes! mode/m/added/pass: %s/%d/%d/%d\n",
                     m_mode.name (), m, added, pass);
       return true;
@@ -251,7 +251,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
     };
   }
   
-  protected int rewire_callback (int split) { return 0; }
+  protected int rewire_callback (int split, int numlinks) { return 0; }
   
   @Override
   public void rewire () {
@@ -281,7 +281,7 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
         }
       });
       
-      links += rewire_callback (split);
+      links += rewire_callback (split, links);
       
       split++;
     }
@@ -310,7 +310,6 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
         if (m_mode_stop (m_mode, m, added, pass))
           break;
         if (to_add != node
-            && graph.nodal_outdegree (node) > 0
             && !graph.is_linked (to_add, node)
             && consider_link (to_add, node, numlinks)
             && add_link (to_add, node))

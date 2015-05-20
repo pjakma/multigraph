@@ -13,7 +13,7 @@ import org.nongnu.multigraph.debug;
  */
 public class MultiClassScaleFreeRewire<N,E> extends ScaleFreeRewire<N,E> {
   protected int p = 1;
-  private m_modes p_mode = m_modes.MAX;
+  private m_modes p_mode = m_modes.STRICT;
   /**
    * @see #p(int)
    * @return The number of links to consider adding between alike nodes on each time-step.
@@ -45,17 +45,19 @@ public class MultiClassScaleFreeRewire<N,E> extends ScaleFreeRewire<N,E> {
     super (graph, el);
   }
   
-  protected boolean consider_similar_link (N vi, N vj, int numlinks) {
+  protected boolean consider_similar_link (N vi, N vj, int numnodes, int numlinks) {
     int ki = graph.nodal_outdegree (vi);
     int kj = graph.nodal_outdegree (vj);
     
     float fr = r.nextFloat ();
-    float pi = Math.abs (kj*ki)/(float)(numlinks*numlinks);
-    debug.printf ("consider_similar_link: %d*%d / numlinks^2 = %f\n", pi);
-    return pi <= fr;
+    double pi = kj*ki/(double)(4*numlinks * numlinks);
+    debug.printf ("consider_similar_link: %5d, %5d, %6d, %6d: %10d/%10d = %8f >= %8f ? %s\n", 
+                  kj, ki, numlinks, numnodes, kj * ki, 4*numlinks * numlinks, 
+                  pi, fr, (fr <= pi ? "y" : " "));
+    return fr <= pi;
   }
   
-  protected int add_like_links (int split) {
+  protected int add_like_links (int split, int numlinks) {
     /* links may be added between like nodes */
     int added = 0;
     int pass = 0;
@@ -63,12 +65,14 @@ public class MultiClassScaleFreeRewire<N,E> extends ScaleFreeRewire<N,E> {
     do {
       for (int i = 0; i < split && !m_mode_stop (p_mode, p, added, pass); i++)
         for (int j = i + 1; j < split && !m_mode_stop (p_mode, p, added, pass); j++) {
-          N n1 = nodes[r.nextInt (split)];
-          N n2 = nodes[r.nextInt (split)];
+          N n1 = nodes[i];
+          N n2 = nodes[j];
           
           if (n1 == n2) continue;
           
-          if (consider_similar_link (n1, n2, split)) {
+          if (consider_similar_link (n1, n2, split, numlinks + added)) {
+            if (graph.is_linked (n1, n2)) continue;
+            
             add_link (n1, n2);
             /* consider it added, even if link already existed,
              * for purposes of number of peering links to add */
@@ -80,8 +84,8 @@ public class MultiClassScaleFreeRewire<N,E> extends ScaleFreeRewire<N,E> {
   }
   
   @Override
-  protected int rewire_callback (int split) {
+  protected int rewire_callback (int split, int numlinks) {
     /* consider like-links */
-    return add_like_links (split);
+    return add_like_links (split, numlinks);
   }
 }
