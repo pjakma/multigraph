@@ -7,8 +7,13 @@
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir"     value="${build.dir}/jar"/>
     <property name="tests.dir"   value="${build.dir}/tests"/>
+    <property name="javadoc.dir"   value="${build.dir}/javadoc"/>
     <property name="junit.jar"   value="lib/junit-4.8.1.jar" />
-
+    
+    <property name="javadoc.overview" value="DESIGN.txt"/>
+    <property name="pdfdoclet.jar"   value="lib/pdfdoclet.jar" />
+    <property name="javadoc.pdf"   value="multigraph-javadoc.pdf" />
+    
     <target name="clean">
         <delete dir="build"/>
     </target>
@@ -30,7 +35,35 @@
             </manifest>
         </jar>
     </target>
+    
+    <target name="javadoc">
+    	<mkdir dir="${javadoc.dir}"/>
+    	<javadoc
+    		destdir="${javadoc.dir}"
+    		author="true"
+    		version="true"
+    		use="true"
+    		windowtitle="MultiGraph API">
+    	  <packageset dir="src" defaultexcludes="yes">
+    	  	<include name="org/nongnu/multigraph/"/>
+    	  </packageset>
+    	</javadoc>
+    </target>
 
+    <target name="javadoc-pdf">
+    	<mkdir dir="${build.dir}"/>
+    	<javadoc
+    		doclet="com.tarsec.javadoc.pdfdoclet.PDFDoclet"
+    		docletpath="${pdfdoclet.jar}"
+    		author="true"
+    		version="true"
+    		additionalparam="-pdf ${javadoc.pdf}">
+    	  <packageset dir="src" defaultexcludes="yes">
+    	  	<include name="org/nongnu/multigraph/"/>
+    	  </packageset>
+    	</javadoc>
+    </target>
+    
     <target name="test" depends="compile">
         <mkdir dir="${tests.dir}" />
         <javac srcdir="tests" destdir="${tests.dir}"
