@@ -75,16 +75,16 @@
 	    <pathelement location="${junit.jar}"/>
 	  </classpath>
 	</javac>
-
-	<java classname="org.junit.runner.JUnitCore">
-	  <arg value="org.nongnu.multigraph.TestEdge"/>
-	  <arg value="org.nongnu.multigraph.layout.Vector2DTest"/>
-	  <arg value="org.nongnu.multigraph.TestMultiDiGraph"/>
+	
+	<junit printsummary="yes" haltonfailure="no">
 	  <classpath>
 	    <pathelement location="${classes.dir}"/>
 	    <pathelement location="${tests.dir}"/>
-	    <pathelement location="${junit.jar}"/>
+	    <pathelement path="${junit.jar}"/>
 	  </classpath>
-	</java>
+	  <test name="org.nongnu.multigraph.TestEdge"/>
+	  <test name="org.nongnu.multigraph.layout.Vector2DTest"/>
+	  <test name="org.nongnu.multigraph.TestMultiDiGraph"/>
+	</junit>
     </target>
 </project>
