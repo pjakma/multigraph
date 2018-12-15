@@ -89,7 +89,7 @@ public class graph_diff<N,E> {
         node_cb.action (n, s);
 
       if (edge_cb != null) {
-        Graph ingraph = innew ? gnew : gold;
+        Graph<N,E> ingraph = innew ? gnew : gold;
 
         /* all edges have changed */
         Set<Edge<N,E>> edges = ingraph.edges (n);

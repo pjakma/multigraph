@@ -44,7 +44,7 @@ public class PartitionGraph<N,E> implements Graph<N,E>, Observer {
     this.graph = cb.create_graph ();
     this.cb = cb;
     num_partitions = cb.num_partitions ();
-    partitions = (Set<N>[]) new Set [num_partitions];
+    partitions = (Set<N>[]) new Object [num_partitions];
     for (int i = 0; i < partitions.length; i++)
       partitions[i] = new HashSet<N> ();
     graph.addObserver (this);

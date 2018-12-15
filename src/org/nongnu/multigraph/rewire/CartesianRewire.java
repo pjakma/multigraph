@@ -62,10 +62,11 @@ public class CartesianRewire<N extends PositionableNode, E>
       shifty = bound.height/2;
       divlen = Math.min (bound.width, bound.height) / divs;
       rangediv = (int) Math.ceil (range/divlen);
-      gridindex = new LinkedList [(int) Math.ceil (bound.getWidth ()/divlen)]
-                                 [(int) Math.ceil (bound.getHeight ()/divlen)];
+      gridindex = (LinkedList<N> [][]) new Object
+                                  [(int) Math.ceil (bound.getWidth ()/divlen)]
+                                  [(int) Math.ceil (bound.getHeight ()/divlen)];
     } else {
-      gridindex = new LinkedList [1][1];
+      gridindex = (LinkedList<N> [][]) new Object [1][1];
       shiftx = shifty = rangediv = 0;
       divlen = 0;
     }
@@ -86,7 +87,7 @@ public class CartesianRewire<N extends PositionableNode, E>
     this.range = range;
     shiftx = shifty = rangediv = 0;
     divlen = 0;
-    gridindex = new LinkedList [1][1];
+    gridindex = (LinkedList<N> [][]) new Object [1][1];
   }
   
   private int _gridcalc (double pos, int shift, int alen) {
