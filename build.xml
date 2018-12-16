@@ -13,7 +13,11 @@
     <property name="javadoc.overview" value="DESIGN.txt"/>
     <property name="pdfdoclet.jar"   value="lib/pdfdoclet.jar" />
     <property name="javadoc.pdf"   value="multigraph-javadoc.pdf" />
-    
+
+    <presetdef name="javac">
+        <javac includeantruntime="false" />
+    </presetdef>
+      
     <target name="clean">
         <delete dir="build"/>
     </target>
