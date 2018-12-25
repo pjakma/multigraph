@@ -45,9 +45,9 @@ import org.nongnu.multigraph.debug;
 public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
   private double k;
   private double mintemp = 0.001;
-  private double C = 0.5;
-  private double minkve = 0.001;
-  private double jiggle = 0.1;
+  private double C = 0.78;
+  private double minkve = 0.2;
+  private double jiggle = 0.001;
 
   private double temperature = 1.2;
   private double decay = 0.96;
@@ -83,7 +83,7 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
    * Create a ForceLayout instance, with the initial temperature set as given,
    * and using the specific C scalar for the k parameter of the algorithm.
    * <p>
-   * C defaults to 1.
+   * C defaults to 0.78.
    * 
    * @param graph
    * @param bound
@@ -140,7 +140,7 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
    * is decayed according to temperature(t+1) = temperature(t) * decay, or
    * temperature (t) = decay^t.
    * <p>
-   * This defaults to 0.94.
+   * This defaults to 0.96.
    *
    * @param decay The decay factor to apply to the temperature. Generally it
    *               should be <= 1. Higher values lead to a more linear decay.
@@ -154,11 +154,12 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
   }
   
   /**
-   * @param minkve Sets the minimum sum of kinetic energy values, below which
-   *               the algorithm will be considered to no longer have any
-   *               movement. 
+   * @param minkve Sets the minimum kinetic energy value. When the average
+   *               kinetic energy of nodes goes below this value the
+   *               algorithm will be considered to no longer have any
+   *               movement.
    * <p>
-   * Default: 0.1
+   * Default: 0.04
    */
   public ForceLayout<N,E> setMinkve (double minkve) {
     this.minkve = minkve;
@@ -173,7 +174,7 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
    * tend to force many nodes against the boundary. Values below 1 will
    * tend to cause nodes to cluster more toward centre of the area.
    * <p>
-   * Default: 1
+   * Default: 0.78
    */
   public ForceLayout<N,E> setC (double C) {
     this.C = C;
@@ -184,7 +185,7 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
   /**
    * @param jiggle Adds some entropy to the algorithm. Higher values
    *               add more jiggle. Recommended value is between
-   *               0 and 1. Defaults to 0.1. 
+   *               0 and 1. Defaults to 0.001. 
    *               
    *               Note that increasing this value will increase the
    *               background 'heat' of the algorithm, and you may need
@@ -199,6 +200,7 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
   public boolean layout (float interval) {
     double sumkve = 0;
     double maxkve = 0;
+    double sumv = 0;
     Random r = new Random ();
     
     debug.println ("force-layout start");
@@ -310,17 +312,30 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
       pos.x = Math.min (Math.max (-bound.width/2, pos.x), bound.width/2);
       pos.y = Math.min (Math.max (-bound.height/2, pos.y), bound.height/2);
       
-      double mag = v.magnitude ();    
+      double mag = v.magnitude ();
       double kve = n.getMass () * mag * mag;
+      sumv += mag;
       sumkve += kve;
       maxkve = Math.max (maxkve, kve);
       
       debug.println ("\tresult: " + pos);
     }
-    
-    debug.println ("kve:    " + sumkve);
+    long gsz = graph.size ();
+    double avgkve = sumkve / gsz;
+    debug.println ("sumkve: " + sumkve);
+    debug.println ("avgkve: " + avgkve);
     debug.println ("maxkve: " + maxkve);
+    debug.println ("sumv  : " + sumv);
+    debug.println ("avgv  : " + sumv/gsz);
     
-    return sumkve > minkve;
+    /* Better way would require doing some kind of statistical regression on
+     * avgkve over last X runs, and work out when slope of best fit hit 0.
+     *
+     * There is no good threshold for avgkve, sumkve, or maxkve to detect
+     * when it has stopped moving much.
+     *
+     * Maybe sum/avg v would be better..
+     */
+    return avgkve > minkve;
   }
 }
