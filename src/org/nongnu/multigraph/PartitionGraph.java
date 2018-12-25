@@ -39,12 +39,12 @@ public class PartitionGraph<N,E> implements Graph<N,E>, Observer {
     public int node2partition (N node);
   }
   
-  @SuppressWarnings ("unchecked")
+  @SuppressWarnings ({"rawtypes","unchecked"})
   public PartitionGraph (PartitionCallbacks<N,E> cb) {
     this.graph = cb.create_graph ();
     this.cb = cb;
     num_partitions = cb.num_partitions ();
-    partitions = (Set<N>[]) new Object [num_partitions];
+    partitions = new Set [num_partitions];
     for (int i = 0; i < partitions.length; i++)
       partitions[i] = new HashSet<N> ();
     graph.addObserver (this);

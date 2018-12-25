@@ -51,7 +51,7 @@ public class CartesianRewire<N extends PositionableNode, E>
    * @param bound The positional boundary for nodes, used for grid-indexing.
    * @param range The maximum range for links between nodes. 
    */
-  @SuppressWarnings ("unchecked")
+  @SuppressWarnings ({"rawtypes","unchecked"})
   public CartesianRewire (Graph<N, E> graph, EdgeLabeler<N, E> el,
                           Dimension bound, float range) {
     super (graph, el);
@@ -62,11 +62,10 @@ public class CartesianRewire<N extends PositionableNode, E>
       shifty = bound.height/2;
       divlen = Math.min (bound.width, bound.height) / divs;
       rangediv = (int) Math.ceil (range/divlen);
-      gridindex = (LinkedList<N> [][]) new Object
-                                  [(int) Math.ceil (bound.getWidth ()/divlen)]
-                                  [(int) Math.ceil (bound.getHeight ()/divlen)];
+      gridindex = new LinkedList [(int) Math.ceil (bound.getWidth ()/divlen)]
+                                 [(int) Math.ceil (bound.getHeight ()/divlen)];
     } else {
-      gridindex = (LinkedList<N> [][]) new Object [1][1];
+      gridindex = new LinkedList [1][1];
       shiftx = shifty = rangediv = 0;
       divlen = 0;
     }
@@ -80,14 +79,14 @@ public class CartesianRewire<N extends PositionableNode, E>
    * @param el The EdgeLaber to callback to create labels.
    * @param range The maximum range for links between nodes. 
    */
-  @SuppressWarnings ("unchecked")
+  @SuppressWarnings ({"rawtypes","unchecked"})
   public CartesianRewire (Graph<N, E> graph, EdgeLabeler<N, E> el,
                           float range) {
     super (graph, el);
     this.range = range;
     shiftx = shifty = rangediv = 0;
     divlen = 0;
-    gridindex = (LinkedList<N> [][]) new Object [1][1];
+    gridindex = new LinkedList [1][1];
   }
   
   private int _gridcalc (double pos, int shift, int alen) {
