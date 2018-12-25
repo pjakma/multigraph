@@ -8,17 +8,17 @@ The 2 most important goals are:
 Simplicity of interfacess:
 --------------------------
 
-Where ever possible, a "facade" design pattern should be used. That is to
-say, compositional objects should have their internal complexity hidden by a
-a very few (ideally just 1), end-user facing objects that provide a simple,
-abstract interface.  Particularly, the end-user should not have to extend
-objects in order to use them.  A good example to follow is the Java
-Collections set of data-types.
+Where ever possible, a "facade" design pattern should be used. 
+Compositional objects should have their internal complexity hidden by a a
+few (ideally just 1), end-user facing objects that provide a simple,
+abstract interface.  The end-user should not have to extend objects in order
+to use them.  A good example to follow is the Java Collections set of
+data-types.
 
-Also, objects should strive to provide good defaults and just work out of
-the box as much possible.  That is to say, it should not be necessary to
-have to learn about and set various parameters in order to use something,
-except to optimise behaviour, ideally.
+Objects should strive to provide good defaults and just work out of the box
+as much possible.  It should not be necessary to have to learn about and set
+various parameters in order to use something, except to optimise behaviour,
+ideally.
 
 
 Scalability:
@@ -29,12 +29,11 @@ It requires discipline to not implement things simply for the sake of it. It
 requires thinking about the compromises between space, time and efficiency
 and choosing appropriately.
 
-E.g. the observant will have noticed we don't keep track of in-degree, which
-is deliberate.  This is because we store information about edges in only 1
-place - the node from which an edge departs.  This means deleting a node
-from a directed graph requires no more than removing the node from the
-master node list - there is no need to update all the destination nodes.
-Etc.
+E.g., these graphs deliberately do not keep track of in-degree.  As a result
+we store information about edges in only 1 place - the node from which an
+edge departs.  Deleting a node from a directed graph requires no more than
+removing the node from the master node list - there is no need to update all
+the destination nodes.  Etc.
 
 For undirected graphs, which are implemented on top of DiGraphs with edges
 in both directions with the same label, removal of course does require
