@@ -65,7 +65,7 @@ public class MultiDiGraph<N,E>
     assert nt != null;
     assert label != null;
     
-    nf.set (nt, weight == 0 ? weight : 1, label);
+    nf.set (nt, weight > 0 ? weight : 1, label);
   }
   
   /**
