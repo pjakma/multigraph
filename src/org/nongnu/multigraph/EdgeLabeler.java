@@ -25,5 +25,12 @@ package org.nongnu.multigraph;
  * @param <E> The type of the Edges in the graph
  */
 public interface EdgeLabeler<N, E> {
+  /**
+   * @Deprecated Use {@link #getEdge() instead}
+   * Java doesn't do interface versions, so this has to be supported forever,
+   * or I just break the i'face and update my uses.
+   */
   public E getLabel (N from, N to);
+    
+  public E getEdge (N from, N to);
 }

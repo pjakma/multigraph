@@ -53,7 +53,7 @@ public class RandomMove<N extends PositionableNode,L>
   
   EdgeLabeler<N, L> probel = new EdgeLabeler<N, L> () {
     @Override
-    public L getLabel (N from, N to) {
+    public L getEdge (N from, N to) {
       double range = maxrange - (maxrange * Math.abs (r.nextGaussian ()));
       
       debug.printf ("moverewire: consider %s, %s\n", from, to);
@@ -62,6 +62,9 @@ public class RandomMove<N extends PositionableNode,L>
       if (from.getPosition ().distance (to.getPosition ()) > range)
         return null;
       return el.getLabel (from, to);
+    }
+    public L getLabel (N from, N to) {
+      return getEdge (from, to);
     }
   };
   public RandomMove (Graph<N,L> graph, EdgeLabeler<N,L> el, 
