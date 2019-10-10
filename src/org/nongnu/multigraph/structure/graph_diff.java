@@ -35,12 +35,12 @@ public class graph_diff<N,E> {
     public void action (Edge<N,E> edge, change_state s);
   }
   
-  private Graph<N,E> gold = null;
-  private Graph<N,E> gnew = null;
-  private graph_diff.node_callback<N> node_cb = null;
-  private graph_diff.edge_callback<N,E> edge_cb = null;
-  private Set<N> all = null;
-  private Iterator<N> it = all.iterator ();
+  private final Graph<N,E> gold;
+  private final Graph<N,E> gnew;
+  private final graph_diff.node_callback<N> node_cb;
+  private final graph_diff.edge_callback<N,E> edge_cb;
+  private final Set<N> all;
+  private final Iterator<N> it;
 
   public graph_diff (Graph<N,E> old_graph, Graph<N,E> new_graph,
                      graph_diff.node_callback<N> node_cb,
@@ -56,6 +56,7 @@ public class graph_diff<N,E> {
     this.edge_cb = edge_cb;
     all = new HashSet<N> (gold);
     all.addAll (gnew);
+    it = all.iterator ();
   }
 
   private void _compare_edges (N n) {
