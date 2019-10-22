@@ -30,7 +30,7 @@ import org.nongnu.multigraph.debug;
  * This algorithm tries to layout a graph as if the nodes are repelled by each 
  * other, exponentially more so as they get closer to each other, while at the 
  * same time the edges act like springs to pull nodes together. These are
- * combined to give each node a velocity and momentum, acting in tension on
+ * combined to give each node velocity, acting in tension on
  * other nodes. If node's have a mass, this is taken into account.
  * <p>
  * The algorithm takes a number of iterations to reach equilibrium, presuming 
@@ -48,7 +48,7 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
   private double C = 0.78;
   private double minkve = 0.2;
   private double jiggle = 0.001;
-
+  private double mass_exponent = 0.0;
   private double temperature = 1.2;
   private double decay = 0.96;
   
@@ -101,8 +101,11 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
   private double attraction (double delta) {
     return (delta * delta) / k;
   }
-  private double repulsion (double delta) {
-    return (k * k) / delta;
+  private double repulsion (float mass, double delta) {
+    double f = (k * k) / delta;
+    if (mass_exponent != 0.0)
+      f *= Math.pow (mass, mass_exponent);
+    return f;
   }
   
   private double decay (double temperature) {
@@ -197,6 +200,23 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
     this.jiggle = jiggle;
   }
   
+  /**
+   * @param mass_exponent Exponent to modulate the repulsive forces between
+   *                      nodes.  The repulsive force attenuates with the
+   *                      distance between nodes, according to k^2 /
+   *                      distance by default.
+   * 
+   *                      The mass_exponent allows this repulsive force to
+   *                      be modulated further by the mass of the node,
+   *                      according to: mass^mass_exponent * (k^2 /
+   *                      distance).
+   *
+   *                      The mass_exponent default to 0.
+   */
+  public void setMassExponent (double mass_exponent) {
+    this.mass_exponent = mass_exponent;
+  }
+  
   public boolean layout (float interval) {
     double sumkve = 0;
     double maxkve = 0;
@@ -214,6 +234,12 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
       
       debug.printf ("node: %s, pos: %s\n", n, n.getPosition ());
       
+      /* XXX: Be better for nearly all graphs to just iterate over the
+       * edges, and do this in O(# edges) instead of O(# nodes ^ 2 + #
+       * edges). That won't work for disconnected nodes though, but... meh?
+       * Could have the graph provide a special-case index of disconnected
+       * nodes. 
+       */
       for (N other : graph) {
         if (other == n)
           continue;
@@ -235,7 +261,7 @@ public class ForceLayout<N extends PositionableNode, E> extends Layout<N, E> {
         
         debug.println ("\t\tdelta1: " + delta);
         
-        double repf = repulsion (delta.length ());
+        double repf = repulsion (n.getMass (), delta.length ());
         
         debug.println ("\t\trepf: " + repf);
         
