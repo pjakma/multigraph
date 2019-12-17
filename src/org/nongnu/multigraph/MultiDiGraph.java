@@ -18,6 +18,7 @@
 package org.nongnu.multigraph;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * A multi-edge, directed graph implementation of the {@link Graph} interface.
@@ -173,7 +174,19 @@ public class MultiDiGraph<N,E>
     if (n == null)
       return null;
 
-    return Collections.unmodifiableSet (n.edges ());
+    return n.edges ();
+  }
+
+  @Override
+  public synchronized Stream<Edge<N,E>> stream (N from) {
+    Node<N,E> n;
+    
+    n = nodes.get (from);
+
+    if (n == null)
+      return null;
+
+    return n.stream ();
   }
   
   @Override
@@ -185,7 +198,7 @@ public class MultiDiGraph<N,E>
     if ((nt = nodes.get ((to))) == null)
       return null;
     
-    return Collections.unmodifiableCollection (nf.edges (nt));
+    return nf.edges (nt);
   }
   
   @Override

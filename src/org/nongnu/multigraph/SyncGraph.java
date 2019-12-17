@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Observer;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  *
@@ -95,12 +96,17 @@ public class SyncGraph<N,E> implements Graph<N,E> {
   public synchronized Set<Edge<N, E>> edges (N from) {
     throw new UnsupportedOperationException ("Not supported yet.");
   }
-
+  
+  @Override
+  public synchronized Stream<Edge<N,E>> stream (N from) {
+    return graph.stream (from);
+  }
+  
   @Override
   public synchronized Collection<Edge<N, E>> edges (N from, N to) {
     throw new UnsupportedOperationException ("Not supported yet.");
   }
-
+  
   @Override
   public synchronized Edge<N, E> edge (N from, N to) {
     throw new UnsupportedOperationException ("Not supported yet.");

@@ -18,6 +18,7 @@
 package org.nongnu.multigraph;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Implementation specific class for the MultiGraph.
@@ -42,10 +43,10 @@ class Node<N,E> {
    * label:edge should be 1:1
    */ 
   private Map<Node<N,E>,Map<E,Edge<N,E>>> edgelist 
-    = Collections.synchronizedMap
-      (new HashMap<Node<N,E>,Map<E,Edge<N,E>>> ());
+    = Collections.synchronizedMap (new HashMap<Node<N,E>,Map<E,Edge<N,E>>> ());
   /* Cache a set of all edges, so that edges() can be performant */
-  private Set<Edge<N,E>> all_edges = new HashSet<Edge<N,E>> ();
+  private Set<Edge<N,E>> all_edges = new HashSet<> ();
+  private Set<Edge<N,E>> all_edges_ro = Collections.unmodifiableSet (all_edges);
   
   // convenience pointer to the user node object
   final N unode;
@@ -170,7 +171,7 @@ class Node<N,E> {
   
   /* Return all edges out of this node */
   Set<Edge<N,E>> edges () {
-    return all_edges;
+    return all_edges_ro;
   }
 
   /* Return edges out of this node, to given node. */
@@ -183,6 +184,10 @@ class Node<N,E> {
       return Collections.emptySet ();
     
     return edges.values ();
+  }
+  
+  Stream<Edge<N,E>> stream () {
+    return all_edges.stream ();
   }
   
   /* Return any 1 of the edges to 'to', if one exists */

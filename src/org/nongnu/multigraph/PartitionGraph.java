@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Partition the nodes of the supplied graph.
@@ -163,10 +164,15 @@ public class PartitionGraph<N,E> implements Graph<N,E>, Observer {
   }
 
   @Override
+  public Stream<Edge<N,E>> stream (N from) {
+    return graph.stream (from);
+  }
+  
+  @Override
   public Collection<Edge<N,E>> edges (N from, N to) {
     return graph.edges (from, to);
   }
-
+  
   @Override
   public Edge<N,E> edge (N from, N to) {
     return graph.edge (from, to);

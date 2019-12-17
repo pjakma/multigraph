@@ -18,6 +18,7 @@
 package org.nongnu.multigraph;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * General Graph interface, for graphs of N-typed nodes, each having
@@ -150,6 +151,11 @@ public interface Graph<N,E> extends Set<N> {
   Set<Edge<N,E>> edges (N from);
   
   /**
+   * Return a Stream over edges going <em>from</em> a node <em>
+   */
+  Stream<Edge<N,E>> stream (N from);
+  
+  /**
    * Find the edges going <em>from</em> one node <em>to</em> another node.
    * @param from Which node we want to query edges from.
    * @param to The node to which we're looking for an edge.
@@ -159,6 +165,7 @@ public interface Graph<N,E> extends Set<N> {
    * @see #edges(Object)
    */
   Collection<Edge<N,E>> edges (N from, N to);
+  
   /**
    * Find the first edge from a node to another node.
    * @param from Which node we want to query edges from.
