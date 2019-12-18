@@ -184,6 +184,23 @@ public class ShortestPathFirst<N,E> {
   }
   
   /**
+   * Return all edges in the SPF tree of the root.
+   *
+   * @return List of Edges in the SPF tree.
+   */
+  public Set<Edge<N,E>> edges () {
+    Set<Edge<N,E>> edges = null;
+    Edge<N,E> e;
+
+    for (SPFnode<N,E> s : spfnodes.values()) {
+      if (edges == null)
+        edges = new HashSet<Edge<N,E>> ();
+      edges.addAll (s.parents);
+    }
+    return edges;
+  }
+  
+  /**
    * Return the next-hop node for the shortest path from the root node to 
    * the given node.
    * @param to Destination node to query path for
