@@ -180,7 +180,39 @@ public class ShortestPathFirst<N,E> {
       to = e.from ();
     }
     
+    if (l != null)
+      Collections.reverse (l);
     return l;
+  }
+
+  /**
+   * Return all edges for paths from the root node to the 'to' node, as a
+   * List of Edges, in the current SPF tree.
+   *
+   * @param to The node to query a path for @return List of Edges forming a
+   * path to the given node
+   * @return Set of edges in the ECMP paths from the root to the given node.
+   */
+  public Set<Edge<N,E>> edges (N to) {
+    SPFnode<N,E> s;
+    Set<Edge<N,E>> edges = null;
+    LinkedList<N> explore = new LinkedList<> ();
+    N n;
+    
+    explore.add (to);
+    while ((n = explore.poll ()) != null) {      
+      if ((s = spfnodes.get (n)) == null || s.parents.size () == 0)
+        continue;
+      
+      if (edges == null)
+        edges = new HashSet<Edge<N,E>> ();
+      
+      for (Edge<N,E> e : s.parents) {
+        explore.add (e.from ());
+        edges.add (e);
+      }
+    }    
+    return edges;
   }
   
   /**
