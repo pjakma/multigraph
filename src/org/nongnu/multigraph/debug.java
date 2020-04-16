@@ -250,7 +250,7 @@ public class debug {
   }
   
   public static boolean applies () {
-	  return applies (levels.DEBUG);
+    return applies (levels.DEBUG);
   }
   
   private static void _printf (StackTraceElement caller, levels d, String s) {
