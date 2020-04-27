@@ -1,4 +1,7 @@
+
 <project name="org.nongnu.multigraph" default="compile">
+    <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"/>
+
     <property file="${user.home}/.ant.global.properties"/>
     <property file="build.properties"/>
     
@@ -9,6 +12,7 @@
     <property name="tests.dir"   value="${build.dir}/tests"/>
     <property name="javadoc.dir"   value="${build.dir}/javadoc"/>
     <property name="junit.jar"   value="lib/junit-4.8.1.jar" />
+    <property name="findbugs.home" value="/usr/share/findbugs" />
     
     <property name="javadoc.overview" value="DESIGN.txt"/>
     <property name="pdfdoclet.jar"   value="lib/pdfdoclet.jar" />
@@ -54,6 +58,15 @@
     	</javadoc>
     </target>
 
+    <target name="findbugs" depends="jar">
+    	<findbugs home="${findbugs.home}"
+    		  output="html"
+              	  outputFile="findbugs-multigraph.html" >
+      	    <sourcePath path="${src.dir}" />
+      	    <class location="${jar.dir}/MultiGraph.jar" />
+        </findbugs>
+    </target>
+
     <target name="javadoc-pdf">
     	<mkdir dir="${build.dir}"/>
     	<javadoc
@@ -90,5 +103,5 @@
 	  <test name="org.nongnu.multigraph.layout.Vector2DTest"/>
 	  <test name="org.nongnu.multigraph.TestMultiDiGraph"/>
 	</junit>
-    </target>
+    </target>  
 </project>
