@@ -7,6 +7,7 @@ package org.nongnu.multigraph;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -237,4 +238,7 @@ public class SyncGraph<N,E> implements Graph<N,E> {
     throw new UnsupportedOperationException ("Not supported yet.");
   }
 
+  public PluggableObservable edge_events () {
+    return graph.edge_events ();
+  }
 }

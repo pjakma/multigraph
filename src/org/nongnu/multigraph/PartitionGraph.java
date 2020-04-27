@@ -320,4 +320,8 @@ public class PartitionGraph<N,E> implements Graph<N,E>, Observer {
     if (!partition.contains (node) && graph.contains (node))
       partition.add (node);
   }
+  
+  public PluggableObservable edge_events () {
+    return graph.edge_events ();
+  }
 }

@@ -34,7 +34,7 @@ import java.util.stream.*;
  * @param E The type of the Edges in the graph
  */
 public class MultiDiGraph<N,E>
-       extends Observable
+       extends PluggableObservable
        implements Graph<N,E> {
   
   // Hash of user-specific N-type node objects to internal Node objects
@@ -99,6 +99,9 @@ public class MultiDiGraph<N,E>
     setChanged ();
     notifyObservers (from);
     notifyObservers (to);
+    
+    edge_events.notifyObservers (label);
+    
   }
   
   // Set an edge between the two nodes (the nodes are added as required)
@@ -129,6 +132,7 @@ public class MultiDiGraph<N,E>
    */
   protected boolean _remove (N from, N to, E label) {
     Node<N,E> nf, nt = null;
+    boolean ret;
     
     if (from == null)
       throw new NullPointerException ("remove: 'from' must not be null");
@@ -144,15 +148,22 @@ public class MultiDiGraph<N,E>
       return false;
     
     setChanged ();
-    notifyObservers (from);
-    
+
     // Dispatch to appropriate method
-    if (label != null)
-      return nf.remove (nt, label);
+    if (label != null) {
+      ret = nf.remove (nt, label);
+      edge_events.notifyObservers (label);
+      notifyObservers (from);
+      return ret;
+    }
+    
+    ret = nf.remove (nt);
     
     notifyObservers (to);
+    notifyObservers (from);
+    edge_events.notifyObservers (label);
     
-    return nf.remove (nt);
+    return ret;
   }
   
   @Override
@@ -364,8 +375,11 @@ public class MultiDiGraph<N,E>
   @Override
   public void clear () { 
     nodes.clear ();
+    
     setChanged ();
+    
     notifyObservers ();
+    edge_events.notifyObservers ();
   }
   @Override
   public boolean contains (Object o) { return nodeset.contains (o); }
@@ -396,7 +410,9 @@ public class MultiDiGraph<N,E>
       n.clear ();
     
     setChanged ();
+    
     notifyObservers ();
+    edge_events.notifyObservers ();
   }
 
   /* same reasoning as above for the unchecked */
@@ -441,58 +457,6 @@ public class MultiDiGraph<N,E>
     
     return size1 == size ();
   }
-  
-  /* Extension to Observable to coalesce updates somewhat */
-  private boolean plugObservable = false;
-  private boolean notifyAll = false;
-  private Set<Object> notifyObjs = new HashSet<Object> ();
-  
-  @Override
-  public synchronized void plugObservable () {
-    plugObservable = true;
-  }
-  
-  @Override
-  public synchronized void unplugObservable () {
-    if (!plugObservable)
-      return;
-    
-    plugObservable = false;
-    
-    if (notifyAll)
-      super.notifyObservers ();
-    else
-      for (Object o : notifyObjs)
-        super.notifyObservers (o);
-    
-    notifyObjs.clear ();
-    notifyAll = false;
-  }
-  
-  @Override
-  public synchronized void notifyObservers () {
-    if (!plugObservable) {
-      super.notifyObservers (null);
-      return;
-    }
-    /* plugged */
-    notifyAll = true;
-  }
-
-  @Override
-  public synchronized void notifyObservers (Object arg) {
-    if (!plugObservable) {
-      super.notifyObservers (arg);
-      return;
-    }
-    
-    /* plugged */
-    if (arg == null)
-      notifyAll = true;
-    
-    if (!notifyAll && arg != null)
-      notifyObjs.add (arg);
-  }
 
   @Override
   public boolean is_directed () {
@@ -514,5 +478,12 @@ public class MultiDiGraph<N,E>
       return false;
     
     return nf.isLinked (nt);
+  }
+
+  /* Allow edge events to be observable too */
+  protected PluggableObservable edge_events = new PluggableObservable ();
+  
+  public PluggableObservable edge_events () {
+    return edge_events;
   }
 }

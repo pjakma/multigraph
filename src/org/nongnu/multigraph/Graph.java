@@ -250,4 +250,6 @@ public interface Graph<N,E> extends Set<N> {
    * coalesce with and subsume *all* events for specific objects. 
    */
   void unplugObservable ();
+  
+  public PluggableObservable edge_events ();
 }
