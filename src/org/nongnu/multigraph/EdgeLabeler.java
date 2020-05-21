@@ -26,11 +26,19 @@ package org.nongnu.multigraph;
  */
 public interface EdgeLabeler<N, E> {
   /**
-   * @Deprecated Use {@link #getEdge() instead}
+   * @deprecated Use {@link #getEdge instead}
    * Java doesn't do interface versions, so this has to be supported forever,
    * or I just break the i'face and update my uses.
+   * @param from The from node in the Edge to label
+   * @param to The to node in the edge to label
+   * @return The graph user's label for this edge.
    */
   public E getLabel (N from, N to);
-    
+  /**
+  * Callback for the graph user to specify its label for a new edge.
+   * @param from The from node in the Edge to label
+   * @param to The to node in the edge to label
+   * @return The graph user's label for this edge.
+   */    
   public E getEdge (N from, N to);
 }

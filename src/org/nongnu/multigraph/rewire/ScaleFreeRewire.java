@@ -76,9 +76,9 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
    * model.
    * 
    * The default is 0, in which case the behaviour is identical to the 
-   * BA model. The value must be >=0.
+   * BA model. The value must be ≥ 0.
    * @param a The initial attractiveness of new nodes.
-   * @return
+   * @return This ScaleFreeRewire instance.
    */
   public ScaleFreeRewire<N,E> a (int a) {
     if (a < 0)
@@ -93,8 +93,8 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   
   /**
    * @param m_mode Whether to interpret m as a maximum, a minimum or strictly
-   *               according to BA model, as a precise number of links to add.
-   *               @see #m_modes.
+   *               according to BA model, as a precise number of links to 
+   *               add. @see #m_modes.
    * @return reference to this class.
    */
   public ScaleFreeRewire<N,E> m_mode (m_modes m_mode) {
@@ -103,8 +103,8 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
   }
   /**
    * @param m_mode Whether to interpret m as a maximum, a minimum or strictly
-   *               according to BA model, as a precise number of links to add.
-   *               @see #m_modes.
+   *               according to BA model, as a precise number of links to 
+   *               add. @see #m_modes.
    * @return reference to this class.
    */
   public ScaleFreeRewire<N,E> m_mode (String m_mode) {
@@ -212,6 +212,8 @@ public class ScaleFreeRewire<N,E> extends Rewire<N,E> {
    * no state beside the number of links, used to calculate the
    * sum of the degrees, which the class already tracks.
    * 
+   * @param added The added node.
+   * @param vi The existing node the edge is added to.
    */
   protected void link_added (N added, N vi) {
     debug.printf ("link added: %s -> %s\n", added, vi);

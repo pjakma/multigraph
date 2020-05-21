@@ -74,6 +74,9 @@ public interface Graph<N,E> extends Set<N> {
   void set (N from, N to, E label);
   /**
    * Set an edge from one node to another with the given label and weight.
+   * @param from The from node in the edge.
+   * @param to The to node in the edge
+   * @param label The graph user's label for the edge.
    * @param weight a user-specified metric or weight for the edge
    * @see #set(Object, Object, Object)
    */
@@ -86,11 +89,16 @@ public interface Graph<N,E> extends Set<N> {
 
   /**
    * Remove 1 specific edge, given by the label, from between two nodes. 
+   * @param from The from node in the edge.
+   * @param to The to node in the edge
+   * @param label The graph user's label for the edge.
    * @return Whether an edge was removed
    */
   boolean remove (N from, N to, E label);
   /**
    * Remove all edges that go from one node to another 
+   * @param from The from node in the edge.
+   * @param to The to node in the edge
    * @return Whether an edge was removed
    * @see #set(Object, Object, Object)
    * @see #add(Object)
@@ -109,10 +117,12 @@ public interface Graph<N,E> extends Set<N> {
   /**
    * The out-degree for a give node. I.e. the number of edges leaving
    * the node.
+   * @param node The node to query for
+   * @return The out-degree for the node.
    */
   int edge_outdegree (N node);
   /**
-   * @param node
+   * @param node The node to query
    * @return The number of distinct nodes to which this node has edges.
    */
   int nodal_outdegree (N node);
@@ -133,7 +143,7 @@ public interface Graph<N,E> extends Set<N> {
   int max_nodal_degree ();
   
   /**
-   * @param node The given node, which is to be queried.
+   * @param from The given node, which is to be queried.
    * @return The set of nodes that succeed the given node. I.e. those nodes 
    *         to which the given node has an edge. The returned set is read-only
    *         and may not be modified. The returned set will be null
@@ -142,7 +152,7 @@ public interface Graph<N,E> extends Set<N> {
    */
   Set<N> successors (N from);
   /**
-   * @param node The given node, which is to be queried.
+   * @param from The given node, which is to be queried.
    * @return The set of edges that go out from this node. The returned set is 
    *          read-only and may not be modified. The set will be null
    *          if the node does not exist, and an empty set if the node
@@ -151,7 +161,9 @@ public interface Graph<N,E> extends Set<N> {
   Set<Edge<N,E>> edges (N from);
   
   /**
-   * Return a Stream over edges going <em>from</em> a node <em>
+   * @param from Obtain a a Stream over the edges 
+   *             going <em>from</em> this node.
+   * @return a Stream over the edges.
    */
   Stream<Edge<N,E>> stream (N from);
   
@@ -160,7 +172,7 @@ public interface Graph<N,E> extends Set<N> {
    * @param from Which node we want to query edges from.
    * @param to The node to which we're looking for an edge.
    * @return An immutable Collection of edges going from 
-   *         @<em>from</em>-&gt;<em>to</em> if the from node exists, 
+   *         <em>from</em>-&gt;<em>to</em> if the from node exists, 
    *         or {@code null} otherwise.
    * @see #edges(Object)
    */
@@ -177,7 +189,8 @@ public interface Graph<N,E> extends Set<N> {
   
   /**
    * Determine if there is a link from one node to another.
-   * 
+   * @param from Which node we want to query edges from.
+   * @param to The node to which we're looking for an edge.
    * @return True if an edge exists from -&gt; to
    */
   boolean is_linked (N from, N to);
@@ -196,6 +209,7 @@ public interface Graph<N,E> extends Set<N> {
   
   /**
    * Provide a random-access Iterable over the &lt;N&gt;-nodes in the graph.
+   * @return Iterable over edge.
    */
   public Iterable<N> random_node_iterable ();
   

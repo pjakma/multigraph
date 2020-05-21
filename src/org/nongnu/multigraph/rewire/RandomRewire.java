@@ -24,7 +24,7 @@ import org.nongnu.multigraph.Graph;
 
 /** 
  * Randomly wire up nodes of a graph, with each node having at least
- * the {@value mindegree} number of outgoing edges. Note that the 
+ * the mindegree number of outgoing edges. Note that the 
  * graph need not be continuous.
  * 
  * @author paul

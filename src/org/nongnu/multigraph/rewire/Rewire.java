@@ -61,7 +61,7 @@ public abstract class Rewire<N,E> {
    * This method is optional, and not all implementations support it.
    *
    * @throws UnsupportedOperationException If this method is not supported.
-   * @param node
+   * @param node The node to add
    */
   public void add (N node) { throw new UnsupportedOperationException ();};
   

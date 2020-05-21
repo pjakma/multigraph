@@ -175,16 +175,16 @@ public class debug {
   }
   
   /**
-   * The current debug level. Messages below this level will not be captured.
-   * @see #level.
+   * The current debug level. Messages below this level will not be 
+   * captured. @see #level.
    * @return Current debug.level.
    */
   public static levels level () {
     return level;
   }
   /**
-   * Set the current debug level. Messages below this level will not be captured.
-   * @see #level.
+   * Set the current debug level. Messages below this level will not be 
+   * captured. @see #level.
    * @param l The debug.level to set.
    */
   public static void level (levels l) {
@@ -192,8 +192,8 @@ public class debug {
     mh.setPushLevel (l.level);
   }
   /**
-   * Set the current debug level. Messages below this level will not be captured.
-   * @see #level.
+   * Set the current debug level. Messages below this level will not be 
+   * captured. @see #level.
    * @param l String representation of debug.level to set.
    */
   public static void level (String l) {
@@ -210,7 +210,7 @@ public class debug {
    * print out the last X lines of "debug" output, but only if a "error" level message
    * was received.
    * 
-   * @return
+   * @return The current push-level
    */
   public static levels pushlevel () {
     return levels.tolevel (mh.getPushLevel ());
@@ -235,7 +235,7 @@ public class debug {
    * when the push-level is higher than the debug level. This
    * defaults to 4096000 (i.e. quite a lot). Setting this parameter
    * destroys any existing log messages.
-   * @param s
+   * @param s The buffersize to set the ring-buffer to.
    */
   public static void buffersize (int s) {
     MemoryHandler newmh = new MemoryHandler (ch, s, mh.getPushLevel ());
