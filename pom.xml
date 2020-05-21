@@ -29,6 +29,17 @@
     <src.dir>src</src.dir>
     <test.dir>tests</test.dir>
   </properties>
+  <profiles>
+    <profile>
+      <id>java8-doclint-disabled</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
+    </profile>
+  </profiles>
 
   <distributionManagement>
       <snapshotRepository>
@@ -44,7 +55,6 @@
   <build>
     <sourceDirectory>${src.dir}</sourceDirectory>
     <testSourceDirectory>${test.dir}</testSourceDirectory>
-    <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -67,20 +77,25 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.9.1</version>
+            <version>3.2.0</version>
             <executions>
                 <execution>
                     <id>attach-javadocs</id>
                     <goals>
                         <goal>jar</goal>
                     </goals>
+                    <configuration>
+                        <doclint>none</doclint>
+                        <additionalparam>${javadoc.opts}</additionalparam>
+                        <!-- <failOnError>false</failOnError> -->
+                    </configuration>
                 </execution>
             </executions>
         </plugin>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.5</version>
+            <version>1.6</version>
             <executions>
                 <execution>
                     <id>sign-artifacts</id>
@@ -103,7 +118,6 @@
             </configuration>
         </plugin>
       </plugins>
-    </pluginManagement>
   </build>
 
        
