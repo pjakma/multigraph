@@ -235,7 +235,12 @@ public class SyncGraph<N,E> implements Graph<N,E> {
 
   @Override
   public synchronized void clear () {
-    throw new UnsupportedOperationException ("Not supported yet.");
+    graph.clear ();
+  }
+
+  @Override
+  public synchronized void clear (N from) {
+    graph.clear (from);
   }
 
   public PluggableObservable edge_events () {

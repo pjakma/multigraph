@@ -414,6 +414,14 @@ public class MultiDiGraph<N,E>
     notifyObservers ();
     edge_events.notifyObservers ();
   }
+  
+  public void
+  clear (N from) {
+    Node<N,E> nf = nodes.get (from);
+    if (nf == null)
+      return;
+    nf.clear ();
+  }
 
   /* same reasoning as above for the unchecked */
   @SuppressWarnings ("unchecked")

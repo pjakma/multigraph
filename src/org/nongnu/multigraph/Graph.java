@@ -113,6 +113,14 @@ public interface Graph<N,E> extends Set<N> {
    */
   void clear_all_edges ();
   
+  /**
+   * Clear all edges from this node.
+   */
+  default void clear (N from) {
+    for (Edge<N,E> e: edges (from))
+      remove (e.from (), e.to ());
+  }
+  
   /* Query methods, beyond those available through Set<N> */
   /**
    * The out-degree for a give node. I.e. the number of edges leaving

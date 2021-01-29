@@ -306,6 +306,11 @@ public class PartitionGraph<N,E> implements Graph<N,E>, Observer {
   }
 
   @Override
+  public void clear (N from) {
+    graph.clear (from);
+  }
+
+  @Override
   public void update (Observable o, Object o1) {
     if (o != graph)
       return;
