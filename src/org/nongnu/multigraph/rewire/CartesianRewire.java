@@ -25,7 +25,7 @@ import org.nongnu.multigraph.layout.PositionableNode;
  */
 public class CartesianRewire<N extends PositionableNode, E>
        extends Rewire<N, E> {
-  private float range;
+  private float range = 10;
   private LinkedList<N> [][] gridindex = null;
   /* number of divisions to make for the grid, on the shortest side of the
    * boundary */
@@ -82,6 +82,15 @@ public class CartesianRewire<N extends PositionableNode, E>
   @SuppressWarnings ({"rawtypes","unchecked"})
   public CartesianRewire (Graph<N, E> graph, EdgeLabeler<N, E> el,
                           float range) {
+    super (graph, el);
+    this.range = range;
+    shiftx = shifty = rangediv = 0;
+    divlen = 0;
+    gridindex = new LinkedList [1][1];
+  }
+
+  @SuppressWarnings ({"rawtypes","unchecked"})
+  public CartesianRewire (Graph<N, E> graph, EdgeLabeler<N, E> el) {
     super (graph, el);
     this.range = range;
     shiftx = shifty = rangediv = 0;
