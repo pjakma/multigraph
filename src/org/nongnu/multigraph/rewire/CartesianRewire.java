@@ -38,6 +38,9 @@ public class CartesianRewire<N extends PositionableNode, E>
   /* the extent of the node range, in divisions */
   private final int rangediv;
   
+  public void range (float range) { this.range = range; }
+  public float range () { return this.range; }
+  
   /**
    * Create a new CartesianRewire instance, for the given graph, wiring up
    * nodes that are within the given distance. Note that the EdgeLabeler
@@ -175,9 +178,6 @@ public class CartesianRewire<N extends PositionableNode, E>
          * e.g. when the grid is [1][1], or there is no grid */
         if (n2 == n1)
           continue;
-        //  targets.remove ();
-        //  continue;
-        //}
         
         double dist = n1.getPosition ().distance (n2.getPosition ());
         
