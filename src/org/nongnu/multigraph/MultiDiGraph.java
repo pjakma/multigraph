@@ -112,9 +112,24 @@ public class MultiDiGraph<N,E>
   @Override
   public synchronized void set (N from, N to, E label, int weight)
     { _set (from, to, weight, label); }
+
+  /* Helper for _remove below, and big-stick "clear" type methods further on */
+  protected boolean _remove (Node<N,E> nf, Node<N,E> nt, E label) {
+    boolean ret;
+
+    setChanged ();
+
+    // Dispatch to appropriate method for label or lack of
+    ret = (label == null ? nf.remove (nt)
+                         : nf.remove (nt, label));
+    if (ret)
+      edge_events.notifyObservers (label);
+    
+    return ret;
+  }
   
   /**
-   * The core, central edge removal method. All other remove methods are
+   * The core, central edge removal methods. All other remove methods are
    * filters for this method, meant to check invariants, apply various 
    * requirements. etc.
    * 
@@ -129,7 +144,6 @@ public class MultiDiGraph<N,E>
    */
   protected boolean _remove (N from, N to, E label) {
     Node<N,E> nf, nt = null;
-    boolean ret;
     
     if (from == null)
       throw new NullPointerException ("remove: 'from' must not be null");
@@ -144,19 +158,7 @@ public class MultiDiGraph<N,E>
     if (nt == null)
       return false;
     
-    setChanged ();
-
-    // Dispatch to appropriate method
-    if (label != null) {
-      ret = nf.remove (nt, label);
-      edge_events.notifyObservers (label);
-      return ret;
-    }
-    
-    ret = nf.remove (nt);
-    edge_events.notifyObservers (label);
-    
-    return ret;
+    return _remove (nf, nt, label);
   }
   
   @Override
@@ -365,6 +367,13 @@ public class MultiDiGraph<N,E>
     
     return ret;
   }
+  /**
+   * Clear all the nodes and edges in the graph.
+   * 
+   * This will not issue per-edge or per-node notifies to Observers, as that
+   * would not scale This is a "big hammer" reset of the graph, and the user
+   * is expected to know this has consequences and handle them itself.
+   */
   @Override
   public void clear () { 
     nodes.clear ();
@@ -397,6 +406,13 @@ public class MultiDiGraph<N,E>
   @Override
   public Iterator<N> iterator() { return nodeset.iterator (); }
   
+  /**
+   * Clear all edges in the graph. Nodes will remain.
+   * 
+   * Again, a "big hammer" reset, which will not result in per-edge
+   * notifications to Observers.  Only a general edge notification.  The
+   * user is expected to handle consequences itself directly.
+   */
   @Override
   public void clear_all_edges () {
     for (Node<N,E> n : nodes.values ())
@@ -404,16 +420,20 @@ public class MultiDiGraph<N,E>
     
     setChanged ();
     
-    notifyObservers ();
     edge_events.notifyObservers ();
   }
-  
+
+  /* same reasoning as above for the unchecked */
+  @SuppressWarnings ("unchecked")  
   public void
   clear (N from) {
     Node<N,E> nf = nodes.get (from);
     if (nf == null)
       return;
-    nf.clear ();
+    for (Object oe : nf.edges ().toArray ()) {
+      Edge<N,E> e = (Edge<N,E>) oe;
+      remove (e.from (), e.to (), e.label ());
+    }
   }
 
   /* same reasoning as above for the unchecked */
