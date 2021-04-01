@@ -53,6 +53,7 @@ public class MultiDiGraph<N,E>
     if (n == null) {
       n = new Node<N,E> (user_node);
       nodes.put (user_node, n);
+      notifyObservers (user_node);
     }
     
     return n;
@@ -67,6 +68,9 @@ public class MultiDiGraph<N,E>
     assert label != null;
     
     nf.set (nt, weight > 0 ? weight : 1, label);
+    
+    setChanged ();
+    edge_events.notifyObservers (label);
   }
   
   /**
@@ -95,13 +99,6 @@ public class MultiDiGraph<N,E>
       nt = get_node (to);
     
     _set (nf, nt, weight, label);
-    
-    setChanged ();
-    notifyObservers (from);
-    notifyObservers (to);
-    
-    edge_events.notifyObservers (label);
-    
   }
   
   // Set an edge between the two nodes (the nodes are added as required)
@@ -137,7 +134,7 @@ public class MultiDiGraph<N,E>
     if (from == null)
       throw new NullPointerException ("remove: 'from' must not be null");
     if (to == null)
-      throw new NullPointerException ("remove: 'from' must not be null");
+      throw new NullPointerException ("remove: 'to' must not be null");
     
     if ((nf = nodes.get (from)) == null)
       return false;
@@ -153,14 +150,10 @@ public class MultiDiGraph<N,E>
     if (label != null) {
       ret = nf.remove (nt, label);
       edge_events.notifyObservers (label);
-      notifyObservers (from);
       return ret;
     }
     
     ret = nf.remove (nt);
-    
-    notifyObservers (to);
-    notifyObservers (from);
     edge_events.notifyObservers (label);
     
     return ret;

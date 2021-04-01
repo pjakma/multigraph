@@ -26,7 +26,7 @@ import java.util.*;
  */
 public class PluggableObservable extends Observable {
   private boolean plugObservable = false;
-  private boolean notifyAll = false;
+  private boolean notifyNull = false;
   private Set<Object> notifyObjs = new HashSet<Object> ();
   
   public synchronized void plugObservable () {
@@ -39,17 +39,19 @@ public class PluggableObservable extends Observable {
     
     plugObservable = false;
     
-    if (notifyAll)
+    if (notifyNull) {
+      setChanged ();
       super.notifyObservers ();
-    else
-      for (Object o : notifyObjs) {
-        super.notifyObservers (o);
-        /* setChanged, or else notifyObservers will act only on first notify */
-        setChanged ();
-      }
+    }
+    
+    for (Object o : notifyObjs) {
+      /* setChanged, or else notifyObservers will act only on first notify */
+      setChanged ();
+      super.notifyObservers (o);
+    }
     
     notifyObjs.clear ();
-    notifyAll = false;
+    notifyNull = false;
   }
   
   @Override
@@ -60,7 +62,7 @@ public class PluggableObservable extends Observable {
       return;
     }
     /* plugged */
-    notifyAll = true;
+    notifyNull = true;
   }
 
   @Override
@@ -73,9 +75,8 @@ public class PluggableObservable extends Observable {
     
     /* plugged */
     if (arg == null)
-      notifyAll = true;
-    
-    if (!notifyAll && arg != null)
+      notifyNull = true;
+    else
       notifyObjs.add (arg);
   }
 }
